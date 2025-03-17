@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --bg: #111;
+  --color-primaryText: #fff;
+  --color-secondaryText: #ddd;
+  --color-placeholderText: #aaa;
+}
+
+:root {
+  --bg: #111;
+  --primaryText: #fff;
+  --secondaryText: #ddd;
+  --placeholderText: #aaa;
+}
+
+html, body {
+  background: var(--bg);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  padding: 1rem;
+  border: solid 1px #242424;
+  border-radius: 1rem;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.5rem 0.25rem 0.25rem;
+  border-bottom: solid 1px #666;
+  color: var(--secondaryText);
+}
+.auth-form input::placeholder {
+  color: var(--placeholderText);
+}
+
+.auth-form button {
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  background: #eee;
+  color: black;
+  transition: all 0.25s;
+}
+.auth-form button:hover {
+  padding: 0.5rem 4rem;
+  background: white;
+}
+
+.auth-form a {
+  color: var(--secondaryText);
+}
+.auth-form a:hover {
+  color: var(--primaryText);
+}
