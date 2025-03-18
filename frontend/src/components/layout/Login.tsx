@@ -39,24 +39,28 @@ export default function Login() {
     };
 
     return (
-        <form className="auth-form" onSubmit={handleSubmitForm}>
-            <label className="absolute invisible" htmlFor="email">Email Address</label>
-            <input
-                name="email"
-                type="email"
-                placeholder="Email"
-                onChange={handleInputChange}
-                required={true}
-            />
-            <label className="absolute invisible" htmlFor="password">Password</label>
-            <input
-                name="password"
-                type="password"
-                placeholder="Password"
-                onChange={handleInputChange}
-            />
-            <button type="submit">Log In</button>
-            <Link to='/signup'>I don't have an account</Link>
-        </form>
+        <>
+            <title>placeholder | Login</title>
+
+            <form className="auth-form" onSubmit={handleSubmitForm}>
+                <label className="absolute invisible" htmlFor="email">Email Address</label>
+                <input
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                    onChange={handleInputChange}
+                    required={true}
+                />
+                <label className="absolute invisible" htmlFor="password">Password</label>
+                <input
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                    onChange={handleInputChange}
+                />
+                <button type="submit">Log In</button>
+                <Link to='/signup'>I don't have an account</Link>
+            </form>
+        </>
     );
 };

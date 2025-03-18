@@ -41,32 +41,36 @@ export default function Signup() {
     };
 
     return (
-        <form className="auth-form" onSubmit={handleSubmitForm}>
-            <label className="absolute invisible" htmlFor="username">Username</label>
-            <input
-                name="username"
-                type="text"
-                placeholder="Username"
-                onChange={handleInputChange}
-                required={true}
-            />
-            <label className="absolute invisible" htmlFor="email">Email Address</label>
-            <input
-                name="email"
-                type="email"
-                placeholder="Email"
-                onChange={handleInputChange}
-                required={true}
-            />
-            <label className="absolute invisible" htmlFor="password">Password</label>
-            <input
-                name="password"
-                type="password"
-                placeholder="Password"
-                onChange={handleInputChange}
-            />
-            <button type="submit">Sign Up</button>
-            <Link to='/login'>I already have an account</Link>
-        </form>
+        <>
+            <title>placeholder | Sign Up</title>
+
+            <form className="auth-form" onSubmit={handleSubmitForm}>
+                <label className="absolute invisible" htmlFor="username">Username</label>
+                <input
+                    name="username"
+                    type="text"
+                    placeholder="Username"
+                    onChange={handleInputChange}
+                    required={true}
+                />
+                <label className="absolute invisible" htmlFor="email">Email Address</label>
+                <input
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                    onChange={handleInputChange}
+                    required={true}
+                />
+                <label className="absolute invisible" htmlFor="password">Password</label>
+                <input
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                    onChange={handleInputChange}
+                />
+                <button type="submit">Sign Up</button>
+                <Link to='/login'>I already have an account</Link>
+            </form>
+        </>
     );
 };
