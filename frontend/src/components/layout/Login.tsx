@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type FormData = {
     email: string | null,
@@ -7,10 +7,13 @@ type FormData = {
 };
 
 export default function Login() {
+    const nav = useNavigate();
+
     const [formData, setFormData] = useState<FormData>({
         email: null,
         password: null,
     });
+    const [error, setError] = useState<string>('');
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -32,7 +35,12 @@ export default function Login() {
             });
             const res = await req.json()
 
-            console.log(res);
+            if (res.message) {
+                document.cookie = 'loggedIn=true;maxAge=1800;'
+                nav('/todo');
+            } else {
+                setError(res.error);
+            };
         } catch(err) {
             console.error(err);
         };
@@ -40,7 +48,7 @@ export default function Login() {
 
     return (
         <>
-            <title>placeholder | Login</title>
+            <title>Momentum | Login</title>
 
             <form className="auth-form" onSubmit={handleSubmitForm}>
                 <label className="absolute invisible" htmlFor="email">Email Address</label>
@@ -58,7 +66,8 @@ export default function Login() {
                     placeholder="Password"
                     onChange={handleInputChange}
                 />
-                <button type="submit">Log In</button>
+                <p className="-my-4 text-red-600">{error}</p>
+                <button type="submit">Login</button>
                 <Link to='/signup'>I don't have an account</Link>
             </form>
         </>

@@ -1,21 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  --bg: #111;
+  --color-bg: #111;
+  --color-shine: #151515 ;
+  --color-emerald: #00C853;
+  --color-emeraldActive: #00e25e;
+  --color-pine: #1DB954;
+  --color-divider: #242424;
+  --color-filter: #222;
+  --color-filterActive: #333;
   --color-primaryText: #fff;
   --color-secondaryText: #ddd;
   --color-placeholderText: #aaa;
+  --color-danger: #e7000b;
 }
 
 :root {
   --bg: #111;
+  --shine: #151515;
+  --emerald: #00C853;
+  --emeraldActive: #00e25e;
+  --pine: #1DB954;
+  --divider: #242424;
+  --filter: #222;
+  --filterActive: #333;
   --primaryText: #fff;
   --secondaryText: #ddd;
   --placeholderText: #aaa;
+  --danger: #e7000b;
 }
 
 html, body {
   background: var(--bg);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  background-color: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 1rem;
+  background: var(--filterActive);
+}
+
+a, button {
+  cursor: pointer;
 }
 
 .auth-form {
@@ -24,30 +54,41 @@ html, body {
   gap: 2rem;
   align-items: center;
   padding: 1rem;
-  border: solid 1px #242424;
+  border: solid 1px var(--divider);
   border-radius: 1rem;
 }
 
 .auth-form input {
   width: 100%;
   padding: 0.5rem 0.25rem 0.25rem;
-  border-bottom: solid 1px #666;
+  border-bottom: solid 1px var(--placeholderText);
   color: var(--secondaryText);
 }
 .auth-form input::placeholder {
   color: var(--placeholderText);
 }
 
+/* overide defualt autofill styles */
+.auth-form input:-webkit-autofill,
+.auth-form input:-webkit-autofill:hover,
+.auth-form input:-webkit-autofill:focus,
+.auth-form input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--bg) inset !important;
+  -webkit-text-fill-color: var(--primaryText) !important;
+}
+
 .auth-form button {
   padding: 0.5rem 1rem;
   border-radius: 3px;
-  background: #eee;
+  background: var(--emerald);
   color: black;
   transition: all 0.25s;
 }
-.auth-form button:hover {
+.auth-form button:hover,
+.auth-form button:active,
+.auth-form button:focus {
   padding: 0.5rem 4rem;
-  background: white;
+  background: var(--emeraldActive);
 }
 
 .auth-form a {
@@ -55,4 +96,30 @@ html, body {
 }
 .auth-form a:hover {
   color: var(--primaryText);
+}
+
+.filters-container {
+  width: 14rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.filters-container div::-webkit-scrollbar {
+  width: 0;
+}
+
+.todo-checkbox {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  border: solid 1px var(--divider);
+  opacity: 0.1;
+}
+
+.todo-checkbox:checked {
+  accent-color: var(--pine);
+  opacity: 1;
 }

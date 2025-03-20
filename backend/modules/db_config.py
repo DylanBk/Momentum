@@ -4,14 +4,18 @@ from sqlalchemy.orm import sessionmaker
 
 from .models import base
 
-base_dir = os.path.abspath(os.path.dirname(__file__))
-instance_dir = os.path.join(base_dir, '...', 'instance')
-instance_dir = os.path.abspath(instance_dir)
+
+# create db file if it doesn't exist
+
+instance_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../', 'instance'))
 
 if not os.path.exists(instance_dir):
     os.makedirs(instance_dir)
 
 db_path = os.path.join(instance_dir, 'db.db')
+
+
+# setup db engine and ORM
 
 engine = create_engine(f'sqlite:///{db_path}', echo=True)
 base.metadata.create_all(bind=engine)

@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type FormData = {
     username: string | null,
@@ -8,11 +8,14 @@ type FormData = {
 };
 
 export default function Signup() {
+    const nav = useNavigate();
+
     const [formData, setFormData] = useState<FormData>({
         username: null,
         email: null,
         password: null,
     });
+    const [error, setError] = useState<string>('');
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -34,7 +37,11 @@ export default function Signup() {
             });
             const res = await req.json()
 
-            console.log(res);
+            if (res.message) {
+                nav('/login');
+            } else {
+                setError(res.error);
+            };
         } catch(err) {
             console.error(err);
         };
@@ -42,7 +49,7 @@ export default function Signup() {
 
     return (
         <>
-            <title>placeholder | Sign Up</title>
+            <title>Momentum | Sign Up</title>
 
             <form className="auth-form" onSubmit={handleSubmitForm}>
                 <label className="absolute invisible" htmlFor="username">Username</label>
@@ -68,6 +75,7 @@ export default function Signup() {
                     placeholder="Password"
                     onChange={handleInputChange}
                 />
+                <p className="-my-4 text-red-600">{error}</p>
                 <button type="submit">Sign Up</button>
                 <Link to='/login'>I already have an account</Link>
             </form>

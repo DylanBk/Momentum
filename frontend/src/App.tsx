@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import Auth from './components/pages/Auth';
-import ToDo from './components/pages/ToDo';
+import ToDo from './components/pages/ToDos';
 import Settings from './components/pages/Settings';
 
 export default function App() {
