@@ -139,8 +139,10 @@ def update_todo():
     if session:
         if request.method == 'POST':
             data = request.get_json()
+            id, updates = data.values()
+            print(id, updates)
 
-            db.update_todo(session['id'], data)
+            db.update_todo(id, updates)
 
             return jsonify({"message": "succesfully updated todo"}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
@@ -156,6 +158,19 @@ def delete_todo():
             db.delete_todo(id)
 
             return jsonify({"message": "succesfully deleted todo"}), 200
+        return send_from_directory(app.static_folder, 'index.html'), 200
+    return jsonify({"error": "You are not logged in"}), 400
+
+@app.route('/api/group/new', methods=['GET', 'POST'])
+def new_group():
+    if session:
+        if request.method == 'POST':
+            data = request.get_json()
+            name = data['name']
+
+            db.create_group(session['id'], name)
+
+            return jsonify({"message": "succesfully created group"}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
     return jsonify({"error": "You are not logged in"}), 400
 

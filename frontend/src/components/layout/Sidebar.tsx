@@ -6,7 +6,9 @@ type Group = {
 };
 
 type SidebarProps = {
-    groups: Group[] | undefined
+    groups: Group[] | undefined,
+    onCreateTodo: () => void,
+    onCreateGroup: () => void
 };
 
 export default function Sidebar(props: SidebarProps) {
@@ -50,8 +52,17 @@ export default function Sidebar(props: SidebarProps) {
             <section className="filters-container">
                 <h2 className="mb-2 text-2xl text-primaryText">Create</h2>
 
-                <button className="w-fit px-4 py-2 rounded-[3px] bg-emerald hover:bg-emeraldActive focus:bg-emeraldActive active:bg-emeraldActive text-sm text-bg font-medium">New ToDo +</button>
-                <button className="w-fit px-4 py-2 border border-emerald hover:border-emeraldActive focus:border-emeraldActive active:border-emeraldActive rounded-[3px] text-sm text-emerald hover:text-emeraldActive focus:text-emeraldActive active:text-emeraldActive font-medium">New Group +</button>
+                <button
+                    className="w-fit px-4 py-2 rounded-[3px] bg-emerald hover:bg-emeraldActive focus:bg-emeraldActive active:bg-emeraldActive text-sm text-bg"
+                    onClick={props.onCreateTodo}>
+                    New ToDo +
+                </button>
+
+                <button
+                    className="w-fit px-4 py-2 border border-emerald hover:border-emeraldActive focus:border-emeraldActive active:border-emeraldActive rounded-[3px] text-sm text-emerald hover:text-emeraldActive focus:text-emeraldActive active:text-emeraldActive"
+                    onClick={props.onCreateGroup}>
+                    New Group +
+                </button>
             </section>
         </div>
     );

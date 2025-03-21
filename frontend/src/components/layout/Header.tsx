@@ -16,7 +16,7 @@ export default function Header() {
 
     return (
         <header className="h-20 w-full flex flex-row justify-between items-center px-4 border-b border-divider">
-            <h1 className="text-3xl text-primaryText cursor-default">Momentum</h1>
+            <h1 className="text-4xl text-primaryText cursor-default">Momentum</h1>
             {!isAuth ? (
                 <nav className="flex flex-row gap-4 text-secondaryText">
                     <Link className="hover:text-primaryText" to='/todo'>My Todo</Link>

@@ -122,13 +122,14 @@ def get_todo(id: int) -> dict | bool:
     if todo:
         todo_dict = {}
 
-        for v in todo:
+        for i in todo:
             todo_dict[0] = {
-                'group': v.group,
-                'title': v.title,
-                'description': v.description,
-                'state': v.state,
-                'created': v.created,
+                'id': i.id,
+                'group': i.group,
+                'title': i.title,
+                'description': i.description,
+                'state': i.state,
+                'created': i.created,
             }
 
         return todo_dict
@@ -143,6 +144,7 @@ def get_todos_all(id: int) -> dict | bool:
 
         for i in todos:
             todo = {
+                'id': i.id,
                 'group': i.group,
                 'title': i.title,
                 'description': i.description,
@@ -157,6 +159,7 @@ def get_todos_all(id: int) -> dict | bool:
     return False
 
 def update_todo(id: int, updates: dict):
+    print(id, updates)
     with Session() as s:
         todo = s.query(ToDo).filter(ToDo.id == id).one_or_none()
 
@@ -179,6 +182,7 @@ def delete_todo(id: int):
 # - GROUP CRUD -
 
 def create_group(id: int, name: str):
+    print(id, name)
     with Session() as s:
         group = Group(id, name)
 

@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "../layout/Header";
 import { useNavigate } from "react-router-dom";
 
 import Sidebar from "../layout/Sidebar";
 import Todo from "../layout/ToDo";
+import CreateTodo from "../layout/CreateTodo";
+import CreateGroup from "../layout/CreateGroup";
 
 type Todo = {
+    id: number,
     group: number,
     title: string,
     description: string,
@@ -22,6 +25,9 @@ export default function ToDo() {
 
     const [todos, setTodos] = useState<Todo[]>();
     const [groups, setGroups] = useState<Group[]>();
+
+    const createTodoRef = useRef<HTMLDivElement>(null);
+    const createGroupRef = useRef<HTMLDivElement>(null);
 
     const getTodos = async () => {
         const req = await fetch('/api/todos/get', {
@@ -58,22 +64,37 @@ export default function ToDo() {
         getGroups();
     }, [nav]);
 
+    const handleCreateTodo = () => {
+        if (createTodoRef.current) {
+            createTodoRef.current.style.display = 'flex';
+        };
+    };
+
+    const handleCreateGroup = () => {
+        if (createGroupRef.current) {
+            createGroupRef.current.style.display = 'flex';
+        };
+    };
+
     return (
-        <div className="flex flex-row flex-wrap">
+        <div className="max-h-screen flex flex-row flex-wrap overflow-hidden">
             <title>Momentum | My ToDos</title>
 
             <Header />
 
-            <Sidebar groups={groups!}/>
+            <Sidebar groups={groups!} onCreateTodo={handleCreateTodo} onCreateGroup={handleCreateGroup} />
 
             { todos && (
-                <div className="w-fit flex flex-col px-12 pt-12">
-                    <h2 className="mb-4 text-2xl text-primaryText">All</h2>
+                <div className="max-h-[calc(100vh-5rem)] w-fit flex flex-col gap-4 p-12 overflow-x-hidden overflow-y-scroll">
+                    <h2 className="mb-4 text-3xl text-primaryText">All</h2>
                     { todos.map((todo: Todo, i: number) => (
-                        <Todo key={i} group={todo.group} title={todo.title} description={todo.description} state={todo.state} created={todo.created} />
+                        <Todo key={i} id={todo.id} group={todo.group} title={todo.title} description={todo.description} state={todo.state} created={todo.created} />
                     ))}
                 </div>
             )}
+
+            <CreateTodo createTodoRef={createTodoRef} groups={groups!} />
+            <CreateGroup createGroupRef={createGroupRef} />
         </div>
     );
 };
