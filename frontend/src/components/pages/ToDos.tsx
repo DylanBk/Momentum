@@ -6,6 +6,8 @@ import Sidebar from "../layout/Sidebar";
 import Todo from "../layout/ToDo";
 import CreateTodo from "../layout/CreateTodo";
 import CreateGroup from "../layout/CreateGroup";
+import EditTodo from "../layout/EditTodo";
+import DeleteTodo from "../layout/DeleteTodo";
 
 type Todo = {
     id: number,
@@ -25,9 +27,12 @@ export default function ToDo() {
 
     const [todos, setTodos] = useState<Todo[]>();
     const [groups, setGroups] = useState<Group[]>();
+    const [todoId, setTodoId] = useState<(number | null)>(null);
 
     const createTodoRef = useRef<HTMLDivElement>(null);
     const createGroupRef = useRef<HTMLDivElement>(null);
+    const editTodoRef = useRef<HTMLDivElement>(null);
+    const deleteTodoref = useRef<HTMLDivElement>(null);
 
     const getTodos = async () => {
         const req = await fetch('/api/todos/get', {
@@ -76,6 +81,22 @@ export default function ToDo() {
         };
     };
 
+    const handleEditTodo = (id: number) => {
+        setTodoId(id);
+
+        if (editTodoRef.current) {
+            editTodoRef.current.style.display = 'flex';
+        };
+    };
+
+    const handleDeleteTodo = (id: number) => {
+        setTodoId(id);
+
+        if (deleteTodoref.current) {
+            deleteTodoref.current.style.display = 'flex';
+        };
+    };
+
     return (
         <div className="max-h-screen flex flex-row flex-wrap overflow-hidden">
             <title>Momentum | My ToDos</title>
@@ -88,13 +109,15 @@ export default function ToDo() {
                 <div className="max-h-[calc(100vh-5rem)] w-fit flex flex-col gap-4 p-12 overflow-x-hidden overflow-y-scroll">
                     <h2 className="mb-4 text-3xl text-primaryText">All</h2>
                     { todos.map((todo: Todo, i: number) => (
-                        <Todo key={i} id={todo.id} group={todo.group} title={todo.title} description={todo.description} state={todo.state} created={todo.created} />
+                        <Todo key={i} id={todo.id} group={todo.group} title={todo.title} description={todo.description} state={todo.state} created={todo.created} onEditTodo={handleEditTodo} onDeleteTodo={handleDeleteTodo} />
                     ))}
                 </div>
             )}
 
             <CreateTodo createTodoRef={createTodoRef} groups={groups!} />
             <CreateGroup createGroupRef={createGroupRef} />
+            <EditTodo editTodoRef={editTodoRef} todoId={todoId!} groups={groups!} />
+            <DeleteTodo deleteTodoRef={deleteTodoref} todoId={todoId!} />
         </div>
     );
 };

@@ -43,7 +43,7 @@ export default function CreateGroup(props: CreateTodoProps) {
             const res = await req.json();
 
             if (res.message) {
-                const form = document.querySelector('.create-form') as HTMLFormElement;
+                const form = props.createGroupRef.current?.firstChild as HTMLDivElement;
                 const success = document.createElement('p');
                 
                 success.classList.add('text-pine')

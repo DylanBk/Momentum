@@ -36,7 +36,7 @@ export default function Login() {
             const res = await req.json()
 
             if (res.message) {
-                document.cookie = 'loggedIn=true;maxAge=1800;'
+                document.cookie = `loggedIn=true; max-age=1800; path=/`;
                 nav('/todo');
             } else {
                 setError(res.error);

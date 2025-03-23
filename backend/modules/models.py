@@ -1,7 +1,6 @@
 import datetime
-from sqlalchemy import Boolean, Column, Date, Integer, String, ForeignKey
+from sqlalchemy import Column, Date, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 
 base = declarative_base()
 
@@ -27,6 +26,18 @@ class User(base):
         if role:
             self.role = role
 
+    def to_dict(self: object) -> dict:
+        user_dict = {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'password': self.password,
+            'role': self.role,
+            'created': self.created
+        }
+
+        return user_dict
+
 class ToDo(base):
     """
     ToDo data model
@@ -48,6 +59,19 @@ class ToDo(base):
         self.title = title
         self.description = description
 
+    def to_dict(self: object) -> dict:
+        todo_dict = {
+            'id': self.id,
+            'user': self.user,
+            'group': self.group,
+            'title': self.title,
+            'description': self.description,
+            'state': self.state,
+            'created': self.created.isoformat()
+        }
+
+        return todo_dict
+
 class Group(base):
     """
     Group data model
@@ -62,3 +86,12 @@ class Group(base):
     def __init__(self: object, user: int, name: str):
         self.user = user
         self.name = name
+
+    def to_dict(self: object) -> dict:
+        group_dict = {
+            'id': self.id,
+            'user': self.user,
+            'name': self.name
+        }
+
+        return group_dict

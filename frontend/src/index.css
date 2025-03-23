@@ -13,6 +13,7 @@
   --color-secondaryText: #ddd;
   --color-placeholderText: #aaa;
   --color-danger: #e7000b;
+  --color-dangerActive: #ff0000;
 }
 
 :root {
@@ -28,6 +29,7 @@
   --secondaryText: #ddd;
   --placeholderText: #aaa;
   --danger: #e7000b;
+  --dangerActive: #ff0000;
 }
 
 @font-face {
@@ -149,6 +151,7 @@ a, button {
   position: absolute;
   left: 50%;
   top: 50%;
+  z-index: 999;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;

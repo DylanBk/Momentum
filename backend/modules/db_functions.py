@@ -1,4 +1,5 @@
 import bcrypt
+from sqlalchemy import and_, or_
 
 from . import models
 from . import db_config
@@ -108,9 +109,9 @@ def delete_user(id: int):
 
 # - TODO CRUD -
 
-def create_todo(id: int, group: str, title: str, description: str):
+def create_todo(id: int, group: int, title: str, description: str):
     with Session() as s:
-        todo = ToDo(id, group, title, description)
+        todo = ToDo(user=id, group=group, title=title, description=description)
 
         s.add(todo)
         s.commit()
@@ -120,17 +121,7 @@ def get_todo(id: int) -> dict | bool:
         todo = s.query(ToDo).filter(ToDo.id == id).one_or_none()
 
     if todo:
-        todo_dict = {}
-
-        for i in todo:
-            todo_dict[0] = {
-                'id': i.id,
-                'group': i.group,
-                'title': i.title,
-                'description': i.description,
-                'state': i.state,
-                'created': i.created,
-            }
+        todo_dict = todo.to_dict()
 
         return todo_dict
     return False
@@ -143,17 +134,8 @@ def get_todos_all(id: int) -> dict | bool:
         todos_lst = []
 
         for i in todos:
-            todo = {
-                'id': i.id,
-                'group': i.group,
-                'title': i.title,
-                'description': i.description,
-                'state': i.state,
-                'created': i.created.strftime('%d/%m/%Y'),
-            }
-            todos_lst.append(todo)
-        
-        print(todos_lst)
+            todo_dict = i.to_dict()
+            todos_lst.append(todo_dict)
 
         return todos_lst
     return False
@@ -189,17 +171,21 @@ def create_group(id: int, name: str):
         s.add(group)
         s.commit()
 
-def get_group(id) -> dict | bool:
+def get_group(**kwargs: int | str) -> dict | bool:
+    user = kwargs.get('user', None)
+    id = kwargs.get('id', None)
+    name = kwargs.get('name', None)
+
     with Session() as s:
-        group = s.query(Group).filter(Group.id == id).one_or_none()
+        if id:
+            group = s.query(Group).filter(Group.id == id).one_or_none()
+        else:
+            group = s.query(Group).filter(and_(Group.user == user, Group.name == name)).one_or_none()
+
+        print(user, name)
 
     if group:
-        group_dict = {}
-
-        for v in group:
-            group_dict[0] = {
-                'name': v.name
-            }
+        group_dict = group.to_dict()
 
         return group_dict
     return False

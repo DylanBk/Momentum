@@ -107,9 +107,14 @@ def new_todo():
             data = request.get_json()
             group, title, description = data.values()
 
-            db.create_todo(session['id'], group, title, description)
+            group = db.get_group(user=session['id'], name=group)
+            print(group)
 
-            return jsonify({"message": "succesfully created todo"}), 200
+            if group:
+                db.create_todo(session['id'], group['id'], title, description)
+
+                return jsonify({"message": "succesfully created todo"}), 200
+            return jsonify({"error": "Group does not exist"}), 400
         return send_from_directory(app.static_folder, 'index.html'), 200
     return jsonify({"error": "You are not logged in"}), 400
 
@@ -153,7 +158,7 @@ def delete_todo():
     if session:
         if request.method == 'POST':
             data = request.get_json()
-            id = data.values()
+            id = data['id']
 
             db.delete_todo(id)
 
@@ -189,7 +194,7 @@ def get_group_data():
             data = request.get_json()
             id = data.values()
 
-            group = db.get_group(id)
+            group = db.get_group(user=session['id'], id=id)
 
             return jsonify({"message": "succesfully retrieved group data", "data": group}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
