@@ -1,32 +1,25 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, RefObject, useState } from "react";
 
 type Group = {
     name: string
 };
 
-type TodoProps = {
-    editTodoRef: React.RefObject<HTMLDivElement>,
-    todoId: number,
+type CreateTodoProps = {
+    createTodoRef: RefObject<HTMLDivElement>,
     groups: Group[]
 };
 
 type FormData = {
-    id: number,
-    updates: {
-        group: string | null,
-        title: string | null,
-        description: string | null
-    }
+    group: string | null
+    title: string | null,
+    description: string | null
 };
 
-export default function EditTodo(props: TodoProps) {
+export default function CreateTodo(props: CreateTodoProps) {
     const [formData, setFormData] = useState<FormData>({
-        id: props.todoId,
-        updates: {
-            group: null,
-            title: null,
-            description: null
-        }
+        group: null,
+        title: null,
+        description: null
     });
 
     const handleInputChange = (e: ChangeEvent<(HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement)>) => {
@@ -34,34 +27,37 @@ export default function EditTodo(props: TodoProps) {
 
         setFormData({
             ...formData,
-            updates: {
-                ...formData.updates,
-                [name]: value === "" ? null : value // if no group is selected then value is null
-            }
+            [name]: value === "" ? null: value // if no group is selected then value is null
         });
     };
 
     const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        if (props.editTodoRef.current) {
-            props.editTodoRef.current.style.display = 'none';
+        setFormData({
+            group: null,
+            title: null,
+            description: null
+        });
+
+        if (props.createTodoRef.current) {
+            props.createTodoRef.current.style.display = 'none';
         };
     };
 
-    const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
+    const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
-            const req = await fetch('/api/todo/update', {
+            const res = await fetch('/api/todo/new', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)
             });
-            const res = await req.json();
+            const req = await res.json();
 
-            if (res.message) {
-                const form = props.editTodoRef.current?.firstChild as HTMLFormElement;
+            if (req.message) {
+                const form = document.querySelector('.create-form') as HTMLFormElement;
                 const success = document.createElement('p');
                 
                 success.classList.add('text-pine')
@@ -70,25 +66,30 @@ export default function EditTodo(props: TodoProps) {
                 form?.replaceWith(success);
 
                 setTimeout(() => {
-                    if (props.editTodoRef.current) {
+                    if (props.createTodoRef.current) {
                         success.replaceWith(form)
-                        props.editTodoRef.current.style.display = 'none';
+                        props.createTodoRef.current.style.display = 'none';
                     };
                 }, 1500);
+            } else {
+                console.error(req.error)
             }
-        } catch(err) { 
+        } catch(err) {
             console.error(err);
         };
     };
 
     return (
         <div
-        ref={props.editTodoRef}
-        className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
+            ref={props.createTodoRef}
+            className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
             <form
                 className="w-1/3 create-form"
-                onSubmit={handleSubmitForm}>
-                <h2>Edit ToDo</h2>
+                onSubmit={handleFormSubmit}>
+                <div className="flex flex-col items-center">
+                    <h2>Create ToDo</h2>
+                    <p>ToDos are tasks that you are challenging yourself to complete, they can be edited or removed at any time.</p>
+                </div>
 
                 { props.groups && (
                     <div className="w-full">

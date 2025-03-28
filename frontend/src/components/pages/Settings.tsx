@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Header from "../layout/Header";
+import Header from "../layout/common/Header";
 
 export default function Settings() {
     const nav = useNavigate();

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import Header from "../layout/Header";
+import Header from "../layout/common/Header";
 import Signup from "../layout/Signup";
 import Login from "../layout/Login";
 

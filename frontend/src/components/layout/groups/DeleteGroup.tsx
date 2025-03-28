@@ -1,14 +1,14 @@
-type DeleteTodoProps = {
-    deleteTodoRef: React.RefObject<HTMLDivElement>,
-    todoId: number
+type DeleteGroupProps = {
+    deleteGroupRef: React.RefObject<HTMLDivElement>,
+    groupId: number
 };
 
-export default function DeleteTodo(props: DeleteTodoProps) {
+export default function DeleteGroup(props: DeleteGroupProps) {
     const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        if (props.deleteTodoRef.current) {
-            props.deleteTodoRef.current.style.display = 'none';
+        if (props.deleteGroupRef.current) {
+            props.deleteGroupRef.current.style.display = 'none';
         };
     };
 
@@ -16,11 +16,13 @@ export default function DeleteTodo(props: DeleteTodoProps) {
         e.preventDefault();
 
         const formData = {
-            id: props.todoId
+            id: props.groupId
         };
 
+        console.log(formData)
+
         try {
-            const req = await fetch('/api/todo/delete', {
+            const req = await fetch('/api/group/delete', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)
@@ -28,18 +30,18 @@ export default function DeleteTodo(props: DeleteTodoProps) {
             const res = await req.json();
 
             if (res.message) {
-                const form = props.deleteTodoRef.current?.firstChild as HTMLFormElement;
+                const form = props.deleteGroupRef.current?.firstChild as HTMLFormElement;
                 const success = document.createElement('p');
                 
                 success.classList.add('text-pine')
                 success.classList.add('create-form')
-                success.textContent = 'ToDo Deleted Successfully!';
+                success.textContent = 'Group Deleted Successfully!';
                 form?.replaceWith(success);
 
                 setTimeout(() => {
-                    if (props.deleteTodoRef.current) {
+                    if (props.deleteGroupRef.current) {
                         success.replaceWith(form)
-                        props.deleteTodoRef.current.style.display = 'none';
+                        props.deleteGroupRef.current.style.display = 'none';
                     };
                 }, 1500);
             };
@@ -50,7 +52,7 @@ export default function DeleteTodo(props: DeleteTodoProps) {
 
     return (
         <div
-            ref={props.deleteTodoRef}
+            ref={props.deleteGroupRef}
             className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
             <form
                 className="w-1/3 create-form"
@@ -76,7 +78,7 @@ export default function DeleteTodo(props: DeleteTodoProps) {
                         Confirm
                     </button>
                 </div>
-                </form>
-            </div>
-    );
-};
+            </form>
+        </div>
+    )
+}

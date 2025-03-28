@@ -13,14 +13,6 @@ export default function CreateGroup(props: CreateTodoProps) {
         name: null
     });
 
-    const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-
-        if (props.createGroupRef.current) {
-            props.createGroupRef.current.style.display = 'none';
-        };
-    };
-
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
 
@@ -28,6 +20,18 @@ export default function CreateGroup(props: CreateTodoProps) {
             ...formData,
             [name]: value
         });
+    };
+
+    const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        setFormData({
+            name: null
+        });
+
+        if (props.createGroupRef.current) {
+            props.createGroupRef.current.style.display = 'none';
+        };
     };
 
     const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {

@@ -7,7 +7,7 @@ export default function Header() {
     useEffect(() => {
         const url = window.location.href;
 
-        if (url.includes('/signup') || url.includes('/login')) {
+        if (url.includes('/signup') || url.includes('/login'))  {
             setIsAuth(true);
         } else {
             setIsAuth(false);

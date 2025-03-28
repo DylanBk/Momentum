@@ -126,6 +126,38 @@ def get_todo(id: int) -> dict | bool:
         return todo_dict
     return False
 
+def get_todos_filtered(**kwargs: int | list) -> list[dict] | bool:
+    state = kwargs.get('state', None)
+    groups = kwargs.get('groups', None)
+    print('s, g', state, groups)
+
+    with Session() as s:
+        todos = []
+
+        # if all groups
+        if groups and groups[0] == '*':
+            groups = None
+
+        # if ungrouped
+        if groups and groups[0] == '!':
+            todos = s.query(ToDo).filter(and_(ToDo.state == state, ToDo.group == None)).all()
+        elif state and not groups:
+            todos = s.query(ToDo).filter(ToDo.state == state).all()
+        elif groups and not state:
+            for group in groups:
+                group_todos = s.query(ToDo).filter(ToDo.group == group).all()
+                todos.extend(group_todos)  # Use extend to flatten the list
+        elif state and groups:
+            for group in groups:
+                group_todos = s.query(ToDo).filter(and_(ToDo.state == state, ToDo.group == group)).all()
+                todos.extend(group_todos)  # Use extend to flatten the list
+        else:
+            todos = s.query(ToDo).all()
+
+    todos = [todo.to_dict() for todo in todos]
+
+    return todos if todos else False
+
 def get_todos_all(id: int) -> dict | bool:
     with Session() as s:
         todos = s.query(ToDo).filter(ToDo.user == id).all()
@@ -198,10 +230,27 @@ def get_groups_all(id: int) -> dict | bool:
         groups_lst = []
 
         for i in groups:
-            group = {
-                'name': i.name
-            }
-            groups_lst.append(group)
+            groups_lst.append(i.to_dict())
 
         return groups_lst
     return False
+
+def update_group(user_id: int, id: int, updates: dict) -> None:
+    with Session() as s:
+        print(user_id, id, updates)
+        group = s.query(Group).filter(and_(Group.user == user_id, Group.id == id)).one_or_none()
+
+        print(group)
+
+        for i, v in updates.items():
+            print(i,v)
+            setattr(group, i, v)
+
+        s.commit()
+
+def delete_group(user_id: int, id: int) -> None:
+    with Session() as s:
+        group = s.query(Group).filter(and_(Group.user == user_id, Group.id == id)).one_or_none()
+
+        s.delete(group)
+        s.commit()

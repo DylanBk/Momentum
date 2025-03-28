@@ -1,33 +1,99 @@
-// import { ChangeEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import FilterBtn from "./FilterBtn";
 
-type Group = {
-    name: string
+type SidebarProps = {
+    groups: {
+        id: number,
+        name: string
+    }[] | undefined,
+    onFilter: (todos: object[]) => void,
+    onCreateTodo: () => void,
+    onCreateGroup: () => void,
+    onEditGroup: (id: number) => void,
+    onDeleteGroup: (id: number) => void
 };
 
-type SidebarProps = {
-    groups: Group[] | undefined,
-    onCreateTodo: () => void,
-    onCreateGroup: () => void
-};
+type FormData = {
+    state: string | null,
+    groups: string[] | null
+}
 
 export default function Sidebar(props: SidebarProps) {
-    // const [formData, setFormData] = useState(null);
+    const [formData, setFormData] = useState<FormData>({
+        state: '1',
+        groups: ['*']
+    });
 
-    // const handleInputChange = (e: ChangeEvent<HTMLButtonElement>) => {
-    //     console.log(e.target.textContent);
-    // };
+    const handleInputChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const { name, value } = e.currentTarget;
+    
+        if (name === 'state') {
+            if (value === formData.state) { // remove if clicked again
+                setFormData({
+                    ...formData,
+                    state: null
+                });
+            } else {
+                setFormData({ // add
+                    ...formData,
+                    state: value
+                });
+            }
+        } else {
+            if (value == '*') { // if all
+                setFormData({
+                    ...formData,
+                    groups: ['*']
+                });
+            } else if (value == '!') { // if ungrouped
+                setFormData({
+                    ...formData,
+                    groups: ['!']
+                });
+            } else if (formData.groups?.includes(value)) { // remove if clicked again
+                setFormData({
+                    ...formData,
+                    groups: formData.groups.filter((group) => group !== value)
+                });
+            } else { // add to formData and remove * or ! if present
+                setFormData({
+                    ...formData,
+                    groups: formData.groups
+                        ? [...formData.groups.filter((group) => group !== '*' && group !== '!'), value]
+                        : [value]
+                });
+            }
+        }
+        handleFilter();
+    };
 
-    // const handleFilter = () => {
-    //     console.log(null);
-    // };
+    const handleFilter = async () => {
+        console.log(formData);
+
+        try {
+            const req = await fetch('/api/filtered-todos/get', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(formData)
+            });
+            const res = await req.json();
+
+            if (res.message) {
+                console.log(res.message)
+                props.onFilter(res.data);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
 
     return (
         <div className="h-full w-64 flex flex-col gap-4 items-center py-8 border-r border-divider">
             <section className="filters-container">
-                <FilterBtn name="state" content="Completed" function={() => alert('completed')} options={null} />
-                <FilterBtn name="state" content="In Progress" function={() => alert('in progress')} options={null} />
-                <FilterBtn name="state" content="Not Completed" function={() => alert('not completed')} options={null} />
+                <FilterBtn name="state" value="2" content="Completed" function={handleInputChange} group={null} />
+                <FilterBtn name="state" value="1" content="In Progress" function={handleInputChange} group={null} />
+                <FilterBtn name="state" value="0" content="Not Completed" function={handleInputChange} group={null} />
             </section>
 
             <hr className="w-4/5 h-[1px] border-0 bg-divider" />
@@ -35,13 +101,13 @@ export default function Sidebar(props: SidebarProps) {
             <section className="filters-container">
                 <h2 className="mb-2 text-2xl text-primaryText">Groups</h2>
 
-                <FilterBtn name="group" content="All" function={() => alert('all')} options={null} />
-                <FilterBtn name="group" content="Ungrouped" function={() => alert('ungrouped')} options={null} />
+                <FilterBtn name="group" value="*" content="All" function={handleInputChange} group={null} />
+                <FilterBtn name="group"  value="!" content="Ungrouped" function={handleInputChange} group={null} />
 
                 {props.groups && (
                     <div className="max-h-24 w-56 flex flex-col gap-2 mt-4 overflow-y-scroll">
                         { props.groups.map((group, i) => (
-                            <FilterBtn key={i} name="group" content={group.name} function={() => alert(`${group.name} selected`)} options={['Rename', 'Delete']} />
+                            <FilterBtn key={i} name="group" value={undefined} content={group.name} function={handleInputChange} group={{id: group.id, options: [{content: 'Edit', function: props.onEditGroup}, {content: 'Delete', function: props.onDeleteGroup}]}} />
                         ))}
                     </div>
                 )}

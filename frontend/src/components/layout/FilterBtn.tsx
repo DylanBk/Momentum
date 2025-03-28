@@ -1,28 +1,33 @@
 import { useState, useEffect, useRef } from "react";
 
 type FilterBtnProps = {
-    name: string;
-    content: string;
-    function: () => void;
-    options: string[] | null;
+    name: string,
+    value: string | number | readonly string[] | undefined,
+    content: string,
+    function: (e: React.MouseEvent<HTMLButtonElement>) => void,
+    group: {
+        id: number,
+        options: {
+            content: string,
+            function: (id: number) => void
+        }[]
+    } | null
 };
 
 export default function FilterBtn(props: FilterBtnProps) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // Toggles the options menu
     const handleOptions = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation(); // Prevents closing immediately when clicking the button
+        e.stopPropagation();
         setIsOpen((prev) => !prev);
     };
 
-    // Closes the menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
                 setIsOpen(false);
-            }
+            };
         };
 
         document.addEventListener("click", handleClickOutside);
@@ -34,11 +39,12 @@ export default function FilterBtn(props: FilterBtnProps) {
             <button
                 name={props.name}
                 className="w-full flex flex-row items-center justify-between p-2 rounded-lg bg-filter hover:bg-filterActive focus:bg-filterActive active:bg-filterActive text-sm text-placeholderText hover:text-primaryText transition-colors duration-200"
+                value={props.group ? props.group.id : props.value}
                 onClick={props.function}>
-                <p>{props.content}</p>
+                {props.content}
             </button>
 
-            {props.options && (
+            {props.group && (
                 <>
                     <button
                         className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-lg bg-transparent hover:bg-filterActive focus:bg-filterActive active:bg-filterActive"
@@ -53,14 +59,14 @@ export default function FilterBtn(props: FilterBtnProps) {
                         <div
                             ref={menuRef}
                             className="w-32 absolute top-full right-0 z-10 flex flex-col border border-divider rounded-md bg-bg overflow-hidden">
-                            {props.options.map((option, index) => (
+                            {props.group.options.map((option, i) => (
                                 <button
-                                    key={index}
+                                    key={i}
                                     className="border-b border-divider last:border-none rounded-none text-secondaryText hover:bg-filterActive hover:text-primaryText"
                                     onClick={() => {
-                                        setIsOpen(false);
+                                        option.function(props.group!.id)
                                     }}>
-                                    {option}
+                                    {option.content}
                                 </button>
                             ))}
                         </div>
