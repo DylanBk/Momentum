@@ -48,7 +48,15 @@ export default function CreateTodo(props: CreateTodoProps) {
     const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (formData.group === undefined) {
+            setFormData({
+                ...formData,
+                group: '_',
+            });
+        };
+
         try {
+            console.log(formData)
             const res = await fetch('/api/todo/new', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -103,7 +111,7 @@ export default function CreateTodo(props: CreateTodoProps) {
                             id="group"
                             name="group"
                             onChange={handleInputChange}>
-                                <option value="">None</option>
+                                <option value={undefined}>None</option>
                                 {props.groups.map((group) => (
                                     <option value={group.name}>{group.name}</option>
                                 ))}

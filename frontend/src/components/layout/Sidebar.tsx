@@ -1,12 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FilterBtn from "./FilterBtn";
+
+type Todo = {
+    id: number,
+    group: number,
+    title: string,
+    description: string,
+    state: number,
+    created: string
+};
 
 type SidebarProps = {
     groups: {
         id: number,
         name: string
     }[] | undefined,
-    onFilter: (todos: object[]) => void,
+    onFilter: (todos: Todo[]) => void,
     onCreateTodo: () => void,
     onCreateGroup: () => void,
     onEditGroup: (id: number) => void,
@@ -16,17 +25,17 @@ type SidebarProps = {
 type FormData = {
     state: string | null,
     groups: string[] | null
-}
+};
 
 export default function Sidebar(props: SidebarProps) {
     const [formData, setFormData] = useState<FormData>({
-        state: '1',
-        groups: ['*']
+        state: null,
+        groups: null
     });
 
     const handleInputChange = (e: React.MouseEvent<HTMLButtonElement>) => {
         const { name, value } = e.currentTarget;
-    
+
         if (name === 'state') {
             if (value === formData.state) { // remove if clicked again
                 setFormData({
@@ -62,30 +71,53 @@ export default function Sidebar(props: SidebarProps) {
                         ? [...formData.groups.filter((group) => group !== '*' && group !== '!'), value]
                         : [value]
                 });
-            }
-        }
-        handleFilter();
+            };
+        };
     };
 
-    const handleFilter = async () => {
+    useEffect(() => {
         console.log(formData);
 
-        try {
-            const req = await fetch('/api/filtered-todos/get', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(formData)
-            });
-            const res = await req.json();
+        const handleFormSubmit = async () => {
+            try {
+                const req = await fetch('/api/filtered-todos/get', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                const res = await req.json();
 
-            if (res.message) {
-                console.log(res.message)
-                props.onFilter(res.data);
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    };
+                if (res.message) {
+                    console.log(res.message)
+                    props.onFilter(res.data);
+                }
+            } catch (e) {
+                console.error(e);
+            };
+        };
+
+        handleFormSubmit();
+    }, [formData])
+
+    // const handleFilter = async () => {
+    //     console.log(formData);
+
+    //     try {
+    //         const req = await fetch('/api/filtered-todos/get', {
+    //             method: 'POST',
+    //             headers: {'Content-Type': 'application/json'},
+    //             body: JSON.stringify(formData)
+    //         });
+    //         const res = await req.json();
+
+    //         if (res.message) {
+    //             console.log(res.message)
+    //             props.onFilter(res.data);
+    //         }
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // };
 
 
     return (

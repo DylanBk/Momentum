@@ -53,11 +53,13 @@ class ToDo(base):
     state = Column(Integer, default=0) # 0 = not done, 1 = in progress, 2 = done
     created = Column(Date, default=datetime.date.today())
 
-    def __init__(self: object, user: int, group: str, title: str, description: str):
+    def __init__(self: object, user: int, group: str | None, title: str, description: str):
         self.user = user
-        self.group = group
         self.title = title
         self.description = description
+
+        if group:
+            self.group = group
 
     def to_dict(self: object) -> dict:
         todo_dict = {

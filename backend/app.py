@@ -113,14 +113,22 @@ def new_todo():
             data = request.get_json()
             group, title, description = data.values()
 
-            group = db.get_group(user=session['id'], name=group)
-            print(group)
+            print(group, title, description)
 
-            if group:
-                db.create_todo(session['id'], group['id'], title, description)
+            if group == '_': #TODO think of a better solution to allow symbols in names
+                group = None
 
-                return jsonify({"message": "succesfully created todo"}), 200
-            return jsonify({"error": "Group does not exist"}), 400
+            if not group:
+                db.create_todo(session['id'], None, title, description)
+            else:
+                group = db.get_group(user=session['id'], name=group)
+
+                if group:
+                    db.create_todo(session['id'], group['id'], title, description)
+
+                    return jsonify({"message": "succesfully created todo"}), 200
+                return jsonify({"error": "Group does not exist"}), 400
+            return jsonify({"message": "succesfully created todo"}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
     return jsonify({"error": "You are not logged in"}), 400
 
@@ -165,7 +173,6 @@ def update_todo():
         if request.method == 'POST':
             data = request.get_json()
             id, updates = data.values()
-            print(id, updates)
 
             db.update_todo(id, updates)
 

@@ -172,18 +172,21 @@ def get_todos_all(id: int) -> dict | bool:
         return todos_lst
     return False
 
-def update_todo(id: int, updates: dict):
+def update_todo(id: int, updates: dict) -> None:
     print(id, updates)
     with Session() as s:
         todo = s.query(ToDo).filter(ToDo.id == id).one_or_none()
+        print(todo)
 
         if todo:
             for i, v in updates.items():
+                print(i)
+                print(v)
                 setattr(todo, i, v)
 
         s.commit()
 
-def delete_todo(id: int):
+def delete_todo(id: int) -> None:
     with Session() as s:
         todo = s.query(ToDo).filter(ToDo.id == id).one_or_none()
 

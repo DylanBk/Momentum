@@ -90,7 +90,7 @@ export default function Todo(props: TodoProps) {
             });
             const req = await res.json();
 
-            props.state = formData.updates.state;
+            // props.state = formData.updates.state; //TODO update state for this ToDo
 
             console.log(req)
         } catch(err) {
