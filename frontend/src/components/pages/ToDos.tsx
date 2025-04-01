@@ -42,7 +42,6 @@ export default function ToDo() {
     const editGroupRef = useRef<HTMLDivElement>(null);
     const deleteGroupRef = useRef<HTMLDivElement>(null);
 
-
     const getTodos = async () => {
         const req = await fetch('/api/todos/get', {
             method: 'GET'
@@ -143,7 +142,7 @@ export default function ToDo() {
                 </div>
             )}
 
-            <CreateTodo createTodoRef={createTodoRef} groups={groups!} />
+            <CreateTodo createTodoRef={createTodoRef} groups={groups!} onCreateTodo={getTodos} />
             <EditTodo editTodoRef={editTodoRef} todoId={todoId!} groups={groups!} />
             <DeleteTodo deleteTodoRef={deleteTodoref} todoId={todoId!} />
 

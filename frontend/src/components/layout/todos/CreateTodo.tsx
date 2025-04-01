@@ -6,7 +6,8 @@ type Group = {
 
 type CreateTodoProps = {
     createTodoRef: RefObject<HTMLDivElement>,
-    groups: Group[]
+    groups: Group[],
+    onCreateTodo: () => void
 };
 
 type FormData = {
@@ -79,9 +80,11 @@ export default function CreateTodo(props: CreateTodoProps) {
                         props.createTodoRef.current.style.display = 'none';
                     };
                 }, 1500);
+
+                props.onCreateTodo();
             } else {
-                console.error(req.error)
-            }
+                console.error(req.error);
+            };
         } catch(err) {
             console.error(err);
         };
