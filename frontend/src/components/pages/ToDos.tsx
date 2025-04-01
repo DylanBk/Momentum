@@ -146,7 +146,7 @@ export default function ToDo() {
             <EditTodo editTodoRef={editTodoRef} todoId={todoId!} groups={groups!} />
             <DeleteTodo deleteTodoRef={deleteTodoref} todoId={todoId!} />
 
-            <CreateGroup createGroupRef={createGroupRef} />
+            <CreateGroup createGroupRef={createGroupRef} onCreateGroup={getGroups} />
             <EditGroup editGroupRef={editGroupRef} groupId={groupId!} />
             <DeleteGroup deleteGroupRef={deleteGroupRef} groupId={groupId!} />
             

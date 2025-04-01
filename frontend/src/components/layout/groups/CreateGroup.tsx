@@ -1,8 +1,9 @@
 import { ChangeEvent, FormEvent, RefObject, useState } from "react";
 
 type CreateTodoProps = {
-    createGroupRef: RefObject<HTMLDivElement>
-}
+    createGroupRef: RefObject<HTMLDivElement>,
+    onCreateGroup: () => void
+};
 
 type FormData = {
     name: string | null
@@ -61,6 +62,8 @@ export default function CreateGroup(props: CreateTodoProps) {
                         props.createGroupRef.current.style.display = 'none';
                     };
                 }, 1500);
+
+                props.onCreateGroup();
             };
         } catch(err) {
             console.error(err);
