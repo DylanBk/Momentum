@@ -57,7 +57,6 @@ export default function CreateTodo(props: CreateTodoProps) {
         };
 
         try {
-            console.log(formData)
             const res = await fetch('/api/todo/new', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -115,8 +114,8 @@ export default function CreateTodo(props: CreateTodoProps) {
                             name="group"
                             onChange={handleInputChange}>
                                 <option value={undefined}>None</option>
-                                {props.groups.map((group) => (
-                                    <option value={group.name}>{group.name}</option>
+                                {props.groups.map((group, i) => (
+                                    <option key={i} value={group.name}>{group.name}</option>
                                 ))}
                         </select>
                     </div>

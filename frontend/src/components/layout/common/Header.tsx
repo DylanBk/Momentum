@@ -19,7 +19,7 @@ export default function Header() {
             <h1 className="text-4xl text-primaryText cursor-default">Momentum</h1>
             {!isAuth ? (
                 <nav className="flex flex-row gap-4 text-secondaryText">
-                    <Link className="hover:text-primaryText" to='/todo'>My Todo</Link>
+                    <Link className="hover:text-primaryText" to='/todo'>My Todos</Link>
                     <Link className="hover:text-primaryText" to='/settings'>Settings</Link>
                 </nav>
             ) : (

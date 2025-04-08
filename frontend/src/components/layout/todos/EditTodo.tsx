@@ -1,11 +1,12 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 type TodoProps = {
     editTodoRef: React.RefObject<HTMLDivElement>,
     todoId: number,
     groups: {
         name: string
-    }[]
+    }[],
+    onTodoEdit: () => void
 };
 
 type FormData = {
@@ -19,13 +20,24 @@ type FormData = {
 
 export default function EditTodo(props: TodoProps) {
     const [formData, setFormData] = useState<FormData>({
-        id: null,
+        id: props.todoId,
         updates: {
             group: null,
             title: null,
             description: null
         }
     });
+
+    useEffect(() => {
+        setFormData({
+            id: props.todoId,
+            updates: {
+                group: null,
+                title: null,
+                description: null
+            }
+        });
+    }, [props.todoId]);
 
     const handleInputChange = (e: ChangeEvent<(HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement)>) => {
         const {name, value} = e.target;        
@@ -43,7 +55,7 @@ export default function EditTodo(props: TodoProps) {
         e.preventDefault();
 
         setFormData({
-            id: props.todoId,
+            id: null,
             updates: {
                 group: null,
                 title: null,
@@ -59,6 +71,8 @@ export default function EditTodo(props: TodoProps) {
     const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        console.log(formData)
+
         try {
             const req = await fetch('/api/todo/update', {
                 method: 'POST',
@@ -66,6 +80,8 @@ export default function EditTodo(props: TodoProps) {
                 body: JSON.stringify(formData)
             });
             const res = await req.json();
+
+            console.log(res)
 
             if (res.message) {
                 const form = props.editTodoRef.current?.firstChild as HTMLFormElement;
@@ -110,8 +126,8 @@ export default function EditTodo(props: TodoProps) {
                             name="group"
                             onChange={handleInputChange}>
                                 <option value="">None</option>
-                                {props.groups.map((group) => (
-                                    <option value={group.name}>{group.name}</option>
+                                {props.groups.map((group, i) => (
+                                    <option key={i} value={group.name}>{group.name}</option>
                                 ))}
                         </select>
                     </div>

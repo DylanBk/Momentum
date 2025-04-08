@@ -176,12 +176,12 @@ def update_todo(id: int, updates: dict) -> None:
     print(id, updates)
     with Session() as s:
         todo = s.query(ToDo).filter(ToDo.id == id).one_or_none()
-        print(todo)
+        print('t', todo)
 
         if todo:
             for i, v in updates.items():
-                print(i)
-                print(v)
+                print('i', i)
+                print('v', v)
                 setattr(todo, i, v)
 
         s.commit()

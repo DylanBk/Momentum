@@ -15,7 +15,7 @@ type SidebarProps = {
         id: number,
         name: string
     }[] | undefined,
-    onFilter: (todos: Todo[]) => void,
+    onFilter: (todos: Todo[], filters: FormData) => void,
     onCreateTodo: () => void,
     onCreateGroup: () => void,
     onEditGroup: (id: number) => void,
@@ -47,7 +47,7 @@ export default function Sidebar(props: SidebarProps) {
                     ...formData,
                     state: value
                 });
-            }
+            };
         } else {
             if (value == '*') { // if all
                 setFormData({
@@ -76,8 +76,6 @@ export default function Sidebar(props: SidebarProps) {
     };
 
     useEffect(() => {
-        console.log(formData);
-
         const handleFormSubmit = async () => {
             try {
                 const req = await fetch('/api/filtered-todos/get', {
@@ -88,9 +86,8 @@ export default function Sidebar(props: SidebarProps) {
                 const res = await req.json();
 
                 if (res.message) {
-                    console.log(res.message)
-                    props.onFilter(res.data);
-                }
+                    props.onFilter(res.data, formData);
+                };
             } catch (e) {
                 console.error(e);
             };
@@ -98,27 +95,6 @@ export default function Sidebar(props: SidebarProps) {
 
         handleFormSubmit();
     }, [formData])
-
-    // const handleFilter = async () => {
-    //     console.log(formData);
-
-    //     try {
-    //         const req = await fetch('/api/filtered-todos/get', {
-    //             method: 'POST',
-    //             headers: {'Content-Type': 'application/json'},
-    //             body: JSON.stringify(formData)
-    //         });
-    //         const res = await req.json();
-
-    //         if (res.message) {
-    //             console.log(res.message)
-    //             props.onFilter(res.data);
-    //         }
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // };
-
 
     return (
         <div className="h-full w-64 flex flex-col gap-4 items-center py-8 border-r border-divider">

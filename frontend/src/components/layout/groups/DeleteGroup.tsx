@@ -1,6 +1,7 @@
 type DeleteGroupProps = {
     deleteGroupRef: React.RefObject<HTMLDivElement>,
-    groupId: number
+    groupId: number,
+    onGroupDelete: () => void
 };
 
 export default function DeleteGroup(props: DeleteGroupProps) {
@@ -18,8 +19,6 @@ export default function DeleteGroup(props: DeleteGroupProps) {
         const formData = {
             id: props.groupId
         };
-
-        console.log(formData)
 
         try {
             const req = await fetch('/api/group/delete', {
@@ -44,6 +43,8 @@ export default function DeleteGroup(props: DeleteGroupProps) {
                         props.deleteGroupRef.current.style.display = 'none';
                     };
                 }, 1500);
+
+                props.onGroupDelete();
             };
         } catch(err) {
             console.error(err);

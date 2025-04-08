@@ -25,14 +25,24 @@ type Group = {
     name: string
 };
 
+type Filter = {
+    state: string | null,
+    groups: string[] | number[] | null
+};
+
 export default function ToDo() {
     const nav = useNavigate();
 
-    const [todos, setTodos] = useState<Todo[]>();
-    const [groups, setGroups] = useState<Group[]>();
+    const [todos, setTodos] = useState<Todo[]>([]);
+    const [groups, setGroups] = useState<Group[]>([]);
 
     const [todoId, setTodoId] = useState<(number | null)>(null);
     const [groupId, setGroupId] = useState<(number | null)>(null);
+
+    const [filters, setFilters] = useState<Filter>({
+        state: null,
+        groups: null
+    });
 
     const createTodoRef = useRef<HTMLDivElement>(null);
     const editTodoRef = useRef<HTMLDivElement>(null);
@@ -48,8 +58,6 @@ export default function ToDo() {
         });
         const res = await req.json();
 
-        console.log('ToDos', res)
-
         if (res.message) {
             setTodos(res.data);
         };
@@ -60,8 +68,6 @@ export default function ToDo() {
             method: 'GET'
         });
         const res = await req.json();
-
-        console.log('Groups', res)
 
         if (res.message) {
             setGroups(res.data);
@@ -77,14 +83,48 @@ export default function ToDo() {
         getGroups();
     }, [nav]);
 
-    const handleFilterData = (todos: Todo[]) => {
+    const handleFilterData = (todos: Todo[], filters: Filter) => {
         setTodos(todos);
+
+        let temp_state: string;
+        const temp_groups: string[] = [];
+
+        switch (filters.state) {
+            case '0':
+                temp_state = 'Not Completed'
+                break;
+            case '1':
+                temp_state = 'In Progress'
+                break;
+            case '2':
+                temp_state = 'Completed'
+                break;
+        };
+
+
+        if (filters.groups) {
+            for (const i in filters.groups) {
+                const ind = Number(i) - 1;
+                temp_groups.push(groups[ind].name);
+            };
+        };
+
+        setFilters({
+            state: temp_state!,
+            groups: temp_groups
+        });
     };
+
 
     const handleCreateTodo = () => {
         if (createTodoRef.current) {
             createTodoRef.current.style.display = 'flex';
         };
+    };
+
+    const handleStateChange = (id: number, state: number) => {
+        setTodos(todos.map((todo) => 
+        todo.id === id ? {...todo, state} : todo)); // redeclare todos, if id matches => update state for that obj
     };
 
     const handleEditTodo = (id: number) => {
@@ -133,24 +173,35 @@ export default function ToDo() {
 
             <Sidebar groups={groups!} onFilter={handleFilterData} onCreateTodo={handleCreateTodo} onCreateGroup={handleCreateGroup} onEditGroup={handleEditGroup} onDeleteGroup={handleDeleteGroup} />
 
-            { todos && (
-                <div className="max-h-[calc(100vh-5rem)] w-fit flex flex-col gap-4 p-12 overflow-x-hidden overflow-y-scroll">
+            {/*TODO add something to show applied filters
+            either highlight selected FilterBtns or create a top bar for applied filters*/}
+
+            <div className="max-h-[calc(100vh-5rem)] w-fit flex flex-col gap-4 p-12 overflow-x-hidden overflow-y-scroll">
+                {!filters ? (
                     <h2 className="mb-4 text-3xl text-primaryText">All</h2>
-                    { todos.map((todo: Todo, i: number) => (
-                        <Todo key={i} id={todo.id} group={todo.group} title={todo.title} description={todo.description} state={todo.state} created={todo.created} onEditTodo={handleEditTodo} onDeleteTodo={handleDeleteTodo} />
-                    ))}
-                </div>
-            )}
+                ) : (
+                    <>
+                        <h2 className="mb-4 text-3xl text-primaryText">{filters.state}</h2>
+                            {filters.groups?.map((group) => {
+                                <p>{group}</p>
+                            })}
+                    </>
+                )}
+
+                { todos && (
+                    todos.map((todo: Todo, i: number) => (
+                        <Todo key={i} id={todo.id} group={todo.group} title={todo.title} description={todo.description} state={todo.state} onStateChange={handleStateChange} created={todo.created} onEditTodo={handleEditTodo} onDeleteTodo={handleDeleteTodo} />
+                    ))
+                )}
+            </div>
 
             <CreateTodo createTodoRef={createTodoRef} groups={groups!} onCreateTodo={getTodos} />
-            <EditTodo editTodoRef={editTodoRef} todoId={todoId!} groups={groups!} />
-            <DeleteTodo deleteTodoRef={deleteTodoref} todoId={todoId!} />
+            <EditTodo editTodoRef={editTodoRef} todoId={todoId!} groups={groups!} onTodoEdit={getTodos} />
+            <DeleteTodo deleteTodoRef={deleteTodoref} todoId={todoId!} onTodoDelete={getTodos} />
 
             <CreateGroup createGroupRef={createGroupRef} onCreateGroup={getGroups} />
-            <EditGroup editGroupRef={editGroupRef} groupId={groupId!} />
-            <DeleteGroup deleteGroupRef={deleteGroupRef} groupId={groupId!} />
-            
-
+            <EditGroup editGroupRef={editGroupRef} groupId={groupId!} onGroupEdit={getGroups} />
+            <DeleteGroup deleteGroupRef={deleteGroupRef} groupId={groupId!} onGroupDelete={getGroups} />
         </div>
     );
 };

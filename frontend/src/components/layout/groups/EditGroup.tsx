@@ -2,7 +2,8 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 
 type EditGroupProps = {
     editGroupRef: React.RefObject<HTMLDivElement>,
-    groupId: number
+    groupId: number,
+    onGroupEdit: () => void
 };
 
 type FormData = {
@@ -21,8 +22,6 @@ export default function EditGroup(props: EditGroupProps) {
     });
 
     useEffect(() => {
-        console.log(props.groupId)
-
         setFormData({
             id: props.groupId,
             updates: {
@@ -61,8 +60,6 @@ export default function EditGroup(props: EditGroupProps) {
     const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log(formData)
-
         try {
             const req = await fetch('/api/group/update', {
                 method: 'POST',
@@ -86,6 +83,8 @@ export default function EditGroup(props: EditGroupProps) {
                         props.editGroupRef.current.style.display = 'none';
                     };
                 }, 1500);
+
+                props.onGroupEdit();
             };
         } catch(err) {
             console.error(err);

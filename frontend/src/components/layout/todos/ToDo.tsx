@@ -6,6 +6,7 @@ type TodoProps = {
     title: string,
     description: string,
     state: number,
+    onStateChange: (id: number, state: number) => void,
     created: string,
     onEditTodo: (id: number) => void,
     onDeleteTodo: (id: number) => void
@@ -83,16 +84,13 @@ export default function Todo(props: TodoProps) {
         };
 
         try {
-            const res  = await fetch('/api/todo/update', {
+            await fetch('/api/todo/update', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)
             });
-            const req = await res.json();
 
-            // props.state = formData.updates.state; //TODO update state for this ToDo
-
-            console.log(req)
+            props.onStateChange(props.id, state);
         } catch(err) {
             console.error(err);
         };

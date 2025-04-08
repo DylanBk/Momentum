@@ -39,7 +39,6 @@ export default function CreateGroup(props: CreateTodoProps) {
         e.preventDefault();
 
         try {
-            console.log(formData)
             const req = await fetch('/api/group/new', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},

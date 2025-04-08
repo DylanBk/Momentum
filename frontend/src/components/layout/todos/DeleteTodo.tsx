@@ -1,6 +1,7 @@
 type DeleteTodoProps = {
     deleteTodoRef: React.RefObject<HTMLDivElement>,
-    todoId: number
+    todoId: number,
+    onTodoDelete: () => void
 };
 
 export default function DeleteTodo(props: DeleteTodoProps) {
@@ -42,6 +43,8 @@ export default function DeleteTodo(props: DeleteTodoProps) {
                         props.deleteTodoRef.current.style.display = 'none';
                     };
                 }, 1500);
+
+                props.onTodoDelete();
             };
         } catch(err) {
             console.error(err);
