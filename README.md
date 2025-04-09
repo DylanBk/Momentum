@@ -27,9 +27,9 @@ The front end side of the site is composed of React, TailwindCSS, and plain CSS 
 
 ## Get Started
 
-### Warning
+### $\textsf{{\color[rgb]{1.0, 0.0, 0.0}Warning}}$
 
-**This project is still under development so it is unlikely to work as expected.**
+$\textsf{{\color[rgb]{1, 0, 0}This project is still under development so it is unlikely to work as expected.}}$
 
 To run this application you need to have Node.js and Python installed on your machine. You will also be required to install the necessary packages.
 
