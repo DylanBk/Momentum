@@ -65,11 +65,11 @@ export default function CreateTodo(props: CreateTodoProps) {
             const req = await res.json();
 
             if (req.message) {
-                const form = document.querySelector('.create-form') as HTMLFormElement;
+                const form = document.querySelector('.modal-form') as HTMLFormElement;
                 const success = document.createElement('p');
                 
                 success.classList.add('text-pine')
-                success.classList.add('create-form')
+                success.classList.add('modal-form')
                 success.textContent = 'ToDo Created Successfully!';
                 form?.replaceWith(success);
 
@@ -94,7 +94,7 @@ export default function CreateTodo(props: CreateTodoProps) {
             ref={props.createTodoRef}
             className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
             <form
-                className="w-1/3 create-form"
+                className="w-1/3 modal-form"
                 onSubmit={handleFormSubmit}>
                 <div className="flex flex-col items-center">
                     <h2>Create ToDo</h2>
@@ -145,7 +145,7 @@ export default function CreateTodo(props: CreateTodoProps) {
                     </button>
 
                     <button
-                        className="w-fit px-4 py-2 rounded-[3px] bg-emerald hover:bg-emeraldActive focus:bg-emeraldActive active:bg-emeraldActive text-bg transition-colors duration-300"
+                        className="btn-confirm"
                         type="submit">
                         Confirm
                     </button>

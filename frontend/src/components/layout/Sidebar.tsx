@@ -52,13 +52,11 @@ export default function Sidebar(props: SidebarProps) {
             }
         } else if (name === 'group') {
             if (value === '*') { // If "All" is selected
-                alert('all')
                 setFormData({
                     ...formData,
                     groups: ['*']
                 });
             } else if (value === '!') { // If "Ungrouped" is selected
-                alert('ungrouped')
                 setFormData({
                     ...formData,
                     groups: ['!']

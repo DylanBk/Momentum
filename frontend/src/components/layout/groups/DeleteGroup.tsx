@@ -33,7 +33,7 @@ export default function DeleteGroup(props: DeleteGroupProps) {
                 const success = document.createElement('p');
                 
                 success.classList.add('text-pine')
-                success.classList.add('create-form')
+                success.classList.add('modal-form')
                 success.textContent = 'Group Deleted Successfully!';
                 form?.replaceWith(success);
 
@@ -56,7 +56,7 @@ export default function DeleteGroup(props: DeleteGroupProps) {
             ref={props.deleteGroupRef}
             className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
             <form
-                className="w-1/3 create-form"
+                className="w-1/3 modal-form"
                 onSubmit={handleSubmitForm}>
                     <div className="flex flex-col items-center">
                         <h2>Delete Todo</h2>

@@ -71,8 +71,6 @@ export default function EditTodo(props: TodoProps) {
     const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log(formData)
-
         try {
             const req = await fetch('/api/todo/update', {
                 method: 'POST',
@@ -88,7 +86,7 @@ export default function EditTodo(props: TodoProps) {
                 const success = document.createElement('p');
                 
                 success.classList.add('text-pine')
-                success.classList.add('create-form')
+                success.classList.add('modal-form')
                 success.textContent = 'ToDo Created Successfully!';
                 form?.replaceWith(success);
 
@@ -109,7 +107,7 @@ export default function EditTodo(props: TodoProps) {
         ref={props.editTodoRef}
         className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
             <form
-                className="w-1/3 create-form"
+                className="w-1/3 modal-form"
                 onSubmit={handleSubmitForm}>
                 <h2>Edit ToDo</h2>
 
@@ -151,13 +149,13 @@ export default function EditTodo(props: TodoProps) {
 
                 <div className="flex flex-row gap-8">
                     <button
-                        className="px-4 py-2 border-2 border-placeholderText rounded-[3px] text-placeholderText hover:border-secondaryText hover:text-secondaryText focus:border-secondaryText focus:text-secondaryText active:border-secondaryText active:text-secondaryText transition-colors duration-200"
+                        className="btn-cancel"
                         onClick={handleCancel}>
                         Cancel
                     </button>
 
                     <button
-                        className="w-fit px-4 py-2 rounded-[3px] bg-emerald hover:bg-emeraldActive focus:bg-emeraldActive active:bg-emeraldActive text-bg transition-colors duration-300"
+                        className="btn-confirm"
                         type="submit">
                         Confirm
                     </button>

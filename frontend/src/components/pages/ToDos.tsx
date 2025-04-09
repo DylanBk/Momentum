@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import Header from "../layout/common/Header";
 import { useNavigate } from "react-router-dom";
 
+import Header from "../layout/common/Header";
 import Sidebar from "../layout/Sidebar";
 import Filter from "../layout/Filter";
 import Todo from "../layout/todos/ToDo";
@@ -86,7 +86,6 @@ export default function ToDo() {
 
     const handleFilterData = (todos: Todo[], filters: Filter) => {
         setTodos(todos);
-        console.log('f', filters)
 
         let temp_state: string = '';
 

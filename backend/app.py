@@ -55,28 +55,32 @@ def login():
 @app.route('/api/user/get', methods=['GET'])
 def get_user_data():
     if session:
-        user = db.get_user(session['id'])
+        user = db.get_user(id=session['id'])
 
         user_data = {
+            'id': user.id,
             'username': user.username,
             'email': user.email,
             'role': user.role
         }
 
         return jsonify({"message": "successfully retrieved user data", "data": user_data}), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/user/update', methods=['GET', 'POST'])
 def update_account():
     if session:
         if request.method == 'POST':
             data = request.get_json()
-            
-            db.update_user(session['id'], data)
 
-            return jsonify({"message": "successfully updated user"}), 200
+            if db.check_pw(session['email'], data['password']):
+                data.pop('password', None) # stops password from being updated too
+                db.update_user(session['id'], data)
+
+                return jsonify({"message": "successfully updated user"}), 200
+            return jsonify({"error": "Incorrect password"}), 400
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/logout', methods=['GET'])
 def logout():
@@ -84,23 +88,23 @@ def logout():
         session.clear()
 
         return jsonify({"message": "successfully logged out"}), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/user/delete', methods=['GET', 'POST'])
 def delete_account():
     if session:
         if request.method == 'POST':
             data = request.get_json()
-            pw = data.values()
+            email, pw = data.values()
 
-            if db.check_pw(pw):
+            if email == session['email'] and db.check_pw(session['email'], pw):
                 db.delete_user(session['id'])
                 session.clear()
 
                 return jsonify({"message": "successfully deleted account"}), 200
-            return jsonify({"error": "Incorrect password"}), 400
+            return jsonify({"error": "Incorrect email or password"}), 400
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 
 # TODOS
@@ -129,7 +133,7 @@ def new_todo():
                 return jsonify({"error": "Group does not exist"}), 400
             return jsonify({"message": "successfully created todo"}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/todos/get', methods=['GET'])
 def get_todos_data():
@@ -137,7 +141,7 @@ def get_todos_data():
         todos = db.get_todos_all(session['id'])
 
         return jsonify({"message": "successfully retrieved todos", "data": todos}), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/filtered-todos/get', methods=['GET', 'POST'])
 def get_filtered_todos():
@@ -152,7 +156,7 @@ def get_filtered_todos():
 
             return jsonify({"message": "successfully retrieved todos", "data": todos}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/todo/get', methods=['GET', 'POST'])
 def get_todo_data():
@@ -165,7 +169,7 @@ def get_todo_data():
 
             return jsonify({"message": "successfully retrieved todo data", "data": todo}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/todo/update', methods=['GET', 'POST'])
 def update_todo():
@@ -179,7 +183,7 @@ def update_todo():
 
             return jsonify({"message": "successfully updated todo"}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/todo/delete', methods=['GET', 'POST'])
 def delete_todo():
@@ -192,7 +196,7 @@ def delete_todo():
 
             return jsonify({"message": "successfully deleted todo"}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 
 # GROUPS
@@ -208,7 +212,7 @@ def new_group():
 
             return jsonify({"message": "successfully created group"}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/groups/get', methods=['GET', 'POST'])
 def get_groups_data():
@@ -216,7 +220,7 @@ def get_groups_data():
         groups = db.get_groups_all(session['id'])
 
         return jsonify({"message": "successfully retrieved groups", "data": groups}), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/group/get', methods=['GET', 'POST'])
 def get_group_data():
@@ -229,7 +233,7 @@ def get_group_data():
 
             return jsonify({"message": "successfully retrieved group data", "data": group}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 
 @app.route('/api/group/update', methods=['GET', 'POST'])
@@ -243,7 +247,7 @@ def update_group_data():
 
             return jsonify({"message": "successfully updated"}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 @app.route('/api/group/delete', methods=['GET', 'POST'])
 def delete_group():
@@ -256,7 +260,7 @@ def delete_group():
 
             return jsonify({"message": "successfully deleted group"}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
-    return jsonify({"error": "You are not logged in"}), 400
+    return jsonify({"error": "You are not logged in"}), 401
 
 
 # MAIN

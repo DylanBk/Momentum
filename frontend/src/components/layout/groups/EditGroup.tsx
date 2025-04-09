@@ -73,7 +73,7 @@ export default function EditGroup(props: EditGroupProps) {
                 const success = document.createElement('p');
 
                 success.classList.add('text-pine');
-                success.classList.add('create-form');
+                success.classList.add('modal-form');
                 success.textContent = 'Group Updated Successfully!';
                 form?.replaceWith(success);
 
@@ -96,7 +96,7 @@ export default function EditGroup(props: EditGroupProps) {
             ref={props.editGroupRef}
             className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
                 <form
-                    className="w-1/3 create-form"
+                    className="w-1/3 modal-form"
                     onSubmit={handleFormSubmit}>
                     <h2>Edit Group</h2>
 
@@ -116,7 +116,7 @@ export default function EditGroup(props: EditGroupProps) {
                         </button>
 
                         <button
-                            className="w-fit px-4 py-2 rounded-[3px] bg-emerald hover:bg-emeraldActive focus:bg-emeraldActive active:bg-emeraldActive text-bg transition-colors duration-300"
+                            className="btn-confirm"
                             type="submit">
                             Confirm
                         </button>

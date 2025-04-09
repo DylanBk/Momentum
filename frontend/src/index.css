@@ -71,6 +71,62 @@ a, button {
   cursor: pointer;
 }
 
+.btn-cancel {
+  padding: 0.5rem 1rem;
+  border: solid 2px var(--placeholderText);
+  border-radius: 3px;
+  color: var(--placeholderText);
+  transition: all 0.2s;
+}
+.btn-cancel:hover,
+.btn-cancel:focus,
+.btn-cancel:active {
+  border: solid 2px var(--secondaryText);
+  color: var(--secondaryText);
+}
+
+.btn-confirm {
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  background: var(--emerald);
+  color: var(--bg);
+  transition: all 0.3s;
+}
+
+.btn-confirm:hover,
+.btn-confirm:focus,
+.btn-confirm:active {
+  background: var(--emeraldActive);
+}
+
+.btn-danger1 {
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  background: var(--danger);
+  color: var(--primaryText);
+  transition: all 0.3s;
+}
+.btn-danger1:hover,
+.btn-danger1:focus,
+.btn-danger1:active {
+  background: var(--dangerActive);
+}
+
+.btn-danger2 {
+  padding: 0.5rem 1rem;
+  border: solid 1px var(--danger);
+  border-radius: 3px;
+  background: var(--bg);
+  color: var(--danger);
+  transition: all 0.3s;
+}
+.btn-danger2:hover,
+.btn-danger2:focus,
+.btn-danger2:active {
+  border: solid 1px var(--dangerActive);
+  color: var(--dangerActive);
+}
+
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -148,11 +204,11 @@ a, button {
   opacity: 1;
 }
 
-.create-form {
+.modal-form {
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: 999;
+  z-index: 2;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
@@ -164,17 +220,17 @@ a, button {
   background: var(--bg);
 }
 
-.create-form h2 {
+.modal-form h2 {
   color: var(--primaryText);
   font-size: xx-large;
 }
 
-.create-form p {
+.modal-form p {
   color: var(--secondaryText);
   font-size: small;
 }
 
-.create-form select {
+.modal-form select {
   width: 100%;
   padding: 0.25rem;
   border: solid 1px var(--divider);
@@ -182,12 +238,12 @@ a, button {
   color: var(--secondaryText);
 }
 
-.create-form option {
+.modal-form option {
   background: var(--bg);
   color: var(--secondaryText);
 }
 
-.create-form input {
+.modal-form input {
   width: 100%;
   padding: 0.5rem 0.25rem 0.25rem;
   border-bottom: solid 1px var(--placeholderText);
@@ -195,15 +251,15 @@ a, button {
 }
 
 /* override default autofill styles */
-.create-form input:-webkit-autofill,
-.create-form input:-webkit-autofill:hover,
-.create-form input:-webkit-autofill:focus,
-.create-form input:-webkit-autofill:active {
+.modal-form input:-webkit-autofill,
+.modal-form input:-webkit-autofill:hover,
+.modal-form input:-webkit-autofill:focus,
+.modal-form input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px var(--bg) inset !important;
   -webkit-text-fill-color: var(--primaryText) !important;
 }
 
-.create-form textarea {
+.modal-form textarea {
   min-height: 7rem;
   max-height: 12rem;
   width: 100%;
@@ -213,7 +269,21 @@ a, button {
   color: var(--secondaryText);
 }
 
-.create-form input::placeholder,
-.create-form textarea::placeholder {
+.modal-form input::placeholder,
+.modal-form textarea::placeholder {
   color: var(--color-placeholderText);
+}
+
+.settings-btn {
+  padding: 0.25rem 1rem;
+  border-radius: 3px;
+  background: var(--primaryText);
+  color: var(--bg);
+  transition: all 0.2s;
+}
+.settings-btn:hover,
+.settings-btn:focus,
+.settings-btn:active {
+  background: var(--secondaryText);
+  color: var(--bg);
 }

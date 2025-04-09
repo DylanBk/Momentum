@@ -29,6 +29,8 @@ export default function Signup() {
     const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        //TODO password regex
+
         try {
             const req = await fetch('/api/signup', {
                 method: 'POST',

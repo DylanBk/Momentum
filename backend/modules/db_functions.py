@@ -88,11 +88,14 @@ def get_users_all() -> list[User] | bool:
     return False
 
 def update_user(id: int, updates: dict):
+    print(updates)
     with Session() as s:
         user = s.query(User).filter(User.id == id).one_or_none()
 
-        for i, v in updates.items():
-            setattr(user, i, v)
+        for k, v in updates.items():
+            if k == 'newPassword': # new password is named newPassword in form
+                k = 'password'
+            setattr(user, k, v)
 
         s.commit()
 
@@ -178,10 +181,8 @@ def update_todo(id: int, updates: dict) -> bool:
         print('t', todo)
 
         if todo:
-            for i, v in updates.items():
-                print('i', i)
-                print('v', v)
-                setattr(todo, i, v)
+            for k, v in updates.items():
+                setattr(todo, k, v)
 
             s.commit()
 
@@ -250,9 +251,8 @@ def update_group(user_id: int, id: int, updates: dict) -> None:
 
         print(group)
 
-        for i, v in updates.items():
-            print(i,v)
-            setattr(group, i, v)
+        for k, v in updates.items():
+            setattr(group, k, v)
 
         s.commit()
 
