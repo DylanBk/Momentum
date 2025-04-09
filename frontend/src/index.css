@@ -91,7 +91,7 @@ a, button {
   color: var(--placeholderText);
 }
 
-/* overide default autofill styles */
+/* override default autofill styles */
 .auth-form input:-webkit-autofill,
 .auth-form input:-webkit-autofill:hover,
 .auth-form input:-webkit-autofill:focus,
@@ -140,6 +140,7 @@ a, button {
   bottom: 1rem;
   border: solid 1px var(--divider);
   opacity: 0.1;
+  cursor: pointer;
 }
 
 .todo-checkbox:checked {
@@ -193,7 +194,7 @@ a, button {
   color: var(--secondaryText);
 }
 
-/* overide default autofill styles */
+/* override default autofill styles */
 .create-form input:-webkit-autofill,
 .create-form input:-webkit-autofill:hover,
 .create-form input:-webkit-autofill:focus,

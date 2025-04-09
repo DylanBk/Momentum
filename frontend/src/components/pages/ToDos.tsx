@@ -3,6 +3,7 @@ import Header from "../layout/common/Header";
 import { useNavigate } from "react-router-dom";
 
 import Sidebar from "../layout/Sidebar";
+import Filter from "../layout/Filter";
 import Todo from "../layout/todos/ToDo";
 import CreateTodo from "../layout/todos/CreateTodo";
 import CreateGroup from "../layout/groups/CreateGroup";
@@ -85,9 +86,9 @@ export default function ToDo() {
 
     const handleFilterData = (todos: Todo[], filters: Filter) => {
         setTodos(todos);
+        console.log('f', filters)
 
-        let temp_state: string;
-        const temp_groups: string[] = [];
+        let temp_state: string = '';
 
         switch (filters.state) {
             case '0':
@@ -101,18 +102,38 @@ export default function ToDo() {
                 break;
         };
 
-
         if (filters.groups) {
-            for (const i in filters.groups) {
-                const ind = Number(i) - 1;
-                temp_groups.push(groups[ind].name);
-            };
-        };
+            if (filters.groups[0] === '*') {
+                setFilters({
+                    state: temp_state,
+                    groups: ['All']
+                });
+            } else if (filters.groups[0] === '!') {
+                setFilters({
+                    state: temp_state,
+                    groups: ['Ungrouped']
+                });
+            } else {
+                const temp_groups: string[] = [];
+                for (const g of filters.groups) {
+                    const x = groups.find((group) => group.id === Number(g));
 
-        setFilters({
-            state: temp_state!,
-            groups: temp_groups
-        });
+                    if (x) {
+                        temp_groups.push(x.name);
+                    };
+                };
+
+                setFilters({
+                    state: temp_state!,
+                    groups: temp_groups
+                });
+            };
+        } else {
+            setFilters({
+                state: temp_state,
+                groups: filters.groups
+            });
+        };
     };
 
 
@@ -173,20 +194,20 @@ export default function ToDo() {
 
             <Sidebar groups={groups!} onFilter={handleFilterData} onCreateTodo={handleCreateTodo} onCreateGroup={handleCreateGroup} onEditGroup={handleEditGroup} onDeleteGroup={handleDeleteGroup} />
 
-            {/*TODO add something to show applied filters
-            either highlight selected FilterBtns or create a top bar for applied filters*/}
-
             <div className="max-h-[calc(100vh-5rem)] w-fit flex flex-col gap-4 p-12 overflow-x-hidden overflow-y-scroll">
-                {!filters ? (
-                    <h2 className="mb-4 text-3xl text-primaryText">All</h2>
-                ) : (
-                    <>
-                        <h2 className="mb-4 text-3xl text-primaryText">{filters.state}</h2>
-                            {filters.groups?.map((group) => {
-                                <p>{group}</p>
-                            })}
-                    </>
-                )}
+                <div className="flex flex-row gap-2">
+                    {filters.state && (
+                        <div className="mr-2">
+                            <Filter name={filters.state} />
+                        </div>
+                    )}
+
+                    {filters.groups && (
+                        filters.groups.map((filter, i) => (
+                            <Filter key={i} name={filter} />
+                        ))
+                    )}
+                </div>
 
                 { todos && (
                     todos.map((todo: Todo, i: number) => (

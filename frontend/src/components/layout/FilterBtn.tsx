@@ -39,7 +39,7 @@ export default function FilterBtn(props: FilterBtnProps) {
             <button
                 name={props.name}
                 className="w-full flex flex-row items-center justify-between p-2 rounded-lg bg-filter hover:bg-filterActive focus:bg-filterActive active:bg-filterActive text-sm text-placeholderText hover:text-primaryText transition-colors duration-200"
-                value={props.group ? props.group.id : props.value}
+                value={props.value}
                 onClick={props.function}>
                 {props.content}
             </button>

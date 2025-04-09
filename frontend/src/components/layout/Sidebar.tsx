@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import FilterBtn from "./FilterBtn";
 
 type Todo = {
@@ -35,36 +36,39 @@ export default function Sidebar(props: SidebarProps) {
 
     const handleInputChange = (e: React.MouseEvent<HTMLButtonElement>) => {
         const { name, value } = e.currentTarget;
+        console.log(name, value)
 
         if (name === 'state') {
-            if (value === formData.state) { // remove if clicked again
+            if (value === formData.state) { // Remove if clicked again
                 setFormData({
                     ...formData,
                     state: null
                 });
             } else {
-                setFormData({ // add
+                setFormData({ // Add
                     ...formData,
                     state: value
                 });
-            };
-        } else {
-            if (value == '*') { // if all
+            }
+        } else if (name === 'group') {
+            if (value === '*') { // If "All" is selected
+                alert('all')
                 setFormData({
                     ...formData,
                     groups: ['*']
                 });
-            } else if (value == '!') { // if ungrouped
+            } else if (value === '!') { // If "Ungrouped" is selected
+                alert('ungrouped')
                 setFormData({
                     ...formData,
                     groups: ['!']
                 });
-            } else if (formData.groups?.includes(value)) { // remove if clicked again
+            } else if (formData.groups?.includes(value)) { // Remove if clicked again
                 setFormData({
                     ...formData,
                     groups: formData.groups.filter((group) => group !== value)
                 });
-            } else { // add to formData and remove * or ! if present
+            } else { // Add specific group and remove '*' or '!'
                 setFormData({
                     ...formData,
                     groups: formData.groups
@@ -77,6 +81,7 @@ export default function Sidebar(props: SidebarProps) {
 
     useEffect(() => {
         const handleFormSubmit = async () => {
+            console.log(formData)
             try {
                 const req = await fetch('/api/filtered-todos/get', {
                     method: 'POST',
@@ -115,7 +120,25 @@ export default function Sidebar(props: SidebarProps) {
                 {props.groups && (
                     <div className="max-h-24 w-56 flex flex-col gap-2 mt-4 overflow-y-scroll">
                         { props.groups.map((group, i) => (
-                            <FilterBtn key={i} name="group" value={undefined} content={group.name} function={handleInputChange} group={{id: group.id, options: [{content: 'Edit', function: props.onEditGroup}, {content: 'Delete', function: props.onDeleteGroup}]}} />
+                            <FilterBtn
+                                key={i}
+                                name="group"
+                                value={group.id}
+                                content={group.name}
+                                function={handleInputChange}
+                                group={
+                                    {id: group.id,
+                                    options: [
+                                        {
+                                            content: 'Edit',
+                                            function: props.onEditGroup},
+                                        {
+                                            content: 'Delete',
+                                            function: props.onDeleteGroup
+                                        }
+                                    ]
+                                }}
+                            />
                         ))}
                     </div>
                 )}

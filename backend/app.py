@@ -145,9 +145,10 @@ def get_filtered_todos():
         if request.method == 'POST':
             data = request.get_json()
             state, groups = data.values()
-            print('data:', data)
+            print('\ndata:', data, '\n')
 
             todos = db.get_todos_filtered(state=state, groups=groups)
+            print('\n', todos, '\n')
 
             return jsonify({"message": "successfully retrieved todos", "data": todos}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200

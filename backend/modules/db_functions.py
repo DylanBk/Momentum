@@ -135,23 +135,22 @@ def get_todos_filtered(**kwargs: int | list) -> list[dict] | bool:
         todos = []
 
         # if all groups
-        if groups and groups[0] == '*':
+        if groups and '*' in groups:
             groups = None
 
-        # if ungrouped
-        if groups and groups[0] == '!':
+        if groups and '!' in groups: # if ungrouped
             todos = s.query(ToDo).filter(and_(ToDo.state == state, ToDo.group == None)).all()
-        elif state and not groups:
+        elif state and not groups: # if state and all/no selected groups
             todos = s.query(ToDo).filter(ToDo.state == state).all()
-        elif groups and not state:
+        elif groups and not state: # if groups and no state
             for group in groups:
                 group_todos = s.query(ToDo).filter(ToDo.group == group).all()
                 todos.extend(group_todos)  # Use extend to flatten the list
-        elif state and groups:
+        elif state and groups: # if state and group selected
             for group in groups:
                 group_todos = s.query(ToDo).filter(and_(ToDo.state == state, ToDo.group == group)).all()
                 todos.extend(group_todos)  # Use extend to flatten the list
-        else:
+        else: # fallback
             todos = s.query(ToDo).all()
 
     todos = [todo.to_dict() for todo in todos]
@@ -172,7 +171,7 @@ def get_todos_all(id: int) -> dict | bool:
         return todos_lst
     return False
 
-def update_todo(id: int, updates: dict) -> None:
+def update_todo(id: int, updates: dict) -> bool:
     print(id, updates)
     with Session() as s:
         todo = s.query(ToDo).filter(ToDo.id == id).one_or_none()
@@ -184,15 +183,21 @@ def update_todo(id: int, updates: dict) -> None:
                 print('v', v)
                 setattr(todo, i, v)
 
-        s.commit()
+            s.commit()
 
-def delete_todo(id: int) -> None:
+            return True
+        return False
+
+def delete_todo(id: int) -> bool:
     with Session() as s:
         todo = s.query(ToDo).filter(ToDo.id == id).one_or_none()
 
         if todo:
             s.delete(todo)
             s.commit()
+
+            return True
+        return False
 
 # -- GROUP FUNCTIONS --
 
