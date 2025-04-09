@@ -204,7 +204,7 @@ export default function ToDo() {
 
                     {filters.groups && (
                         filters.groups.map((filter, i) => (
-                            <Filter key={i} name={filter} />
+                            <Filter key={i} name={filter as string} />
                         ))
                     )}
                 </div>
