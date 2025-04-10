@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 type FilterBtnProps = {
     name: string,
-    value: string | number | readonly string[] | undefined,
+    value: string | number | string[] | undefined,
     content: string,
     function: (e: React.MouseEvent<HTMLButtonElement>) => void,
     group: {
@@ -11,28 +11,36 @@ type FilterBtnProps = {
             content: string,
             function: (id: number) => void
         }[]
-    } | null
+    } | null,
+    isOpen: boolean,
+    setOpenMenu: (menu: string | null) => void
 };
 
 export default function FilterBtn(props: FilterBtnProps) {
-    const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-
-    const handleOptions = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
-        setIsOpen((prev) => !prev);
-    };
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-                setIsOpen(false);
+                props.setOpenMenu(null);
             };
         };
 
-        document.addEventListener("click", handleClickOutside);
-        return () => document.removeEventListener("click", handleClickOutside);
-    }, []);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [props]);
+
+    const handleOptions = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+
+        props.setOpenMenu(props.isOpen ? null : (`${props.name}-${props.value}`));
+    };
+
+    useEffect(() => {
+        if (menuRef.current) {
+            menuRef.current.parentElement?.scrollIntoView({behavior: 'smooth'})
+        };
+    }, [props.isOpen]);
 
     return (
         <div className="relative w-full">
@@ -44,7 +52,7 @@ export default function FilterBtn(props: FilterBtnProps) {
                 {props.content}
             </button>
 
-            {props.group && (
+            { props.group && (
                 <>
                     <button
                         className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-lg bg-transparent hover:bg-filterActive focus:bg-filterActive active:bg-filterActive"
@@ -55,7 +63,7 @@ export default function FilterBtn(props: FilterBtnProps) {
                         </svg>
                     </button>
 
-                    { isOpen && (
+                    { props.isOpen && (
                         <div
                             ref={menuRef}
                             className="w-32 absolute top-full right-0 z-10 flex flex-col border border-divider rounded-md bg-bg overflow-hidden">

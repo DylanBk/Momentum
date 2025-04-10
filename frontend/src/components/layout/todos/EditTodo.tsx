@@ -2,11 +2,12 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 type TodoProps = {
     editTodoRef: React.RefObject<HTMLDivElement>,
-    todoId: number,
+    id: number,
     groups: {
+        id: number,
         name: string
     }[],
-    onTodoEdit: () => void
+    onEdit: () => void
 };
 
 type FormData = {
@@ -20,7 +21,7 @@ type FormData = {
 
 export default function EditTodo(props: TodoProps) {
     const [formData, setFormData] = useState<FormData>({
-        id: props.todoId,
+        id: props.id,
         updates: {
             group: null,
             title: null,
@@ -30,17 +31,17 @@ export default function EditTodo(props: TodoProps) {
 
     useEffect(() => {
         setFormData({
-            id: props.todoId,
+            id: props.id,
             updates: {
                 group: null,
                 title: null,
                 description: null
             }
         });
-    }, [props.todoId]);
+    }, [props.id]);
 
     const handleInputChange = (e: ChangeEvent<(HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement)>) => {
-        const {name, value} = e.target;        
+        const {name, value} = e.target;  
 
         setFormData({
             ...formData,
@@ -64,6 +65,7 @@ export default function EditTodo(props: TodoProps) {
         });
 
         if (props.editTodoRef.current) {
+            (props.editTodoRef.current.children[0] as HTMLFormElement).reset();
             props.editTodoRef.current.style.display = 'none';
         };
     };
@@ -79,24 +81,26 @@ export default function EditTodo(props: TodoProps) {
             });
             const res = await req.json();
 
-            console.log(res)
-
             if (res.message) {
-                const form = props.editTodoRef.current?.firstChild as HTMLFormElement;
-                const success = document.createElement('p');
-                
-                success.classList.add('text-pine')
-                success.classList.add('modal-form')
-                success.textContent = 'ToDo Created Successfully!';
-                form?.replaceWith(success);
+                if (props.editTodoRef.current) {
+                    const form = props.editTodoRef.current.children[0] as HTMLFormElement;
+                    const success = document.createElement('p') as HTMLParagraphElement;
+                    
+                    success.classList.add('text-pine')
+                    success.classList.add('modal-form')
+                    success.textContent = 'ToDo Created Successfully!';
 
-                setTimeout(() => {
-                    if (props.editTodoRef.current) {
+                    form.reset();
+                    form.replaceWith(success);
+
+                    setTimeout(() => {
                         success.replaceWith(form)
-                        props.editTodoRef.current.style.display = 'none';
-                    };
-                }, 1500);
-            }
+                        form.parentElement!.style.display = 'none';
+                    }, 1000);
+                };
+
+                props.onEdit();
+            };
         } catch(err) { 
             console.error(err);
         };
@@ -105,7 +109,7 @@ export default function EditTodo(props: TodoProps) {
     return (
         <div
         ref={props.editTodoRef}
-        className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
+        className="h-full w-full absolute inset-0 z-20 hidden bg-black/30 backdrop-blur-sm">
             <form
                 className="w-1/3 modal-form"
                 onSubmit={handleSubmitForm}>
@@ -125,7 +129,7 @@ export default function EditTodo(props: TodoProps) {
                             onChange={handleInputChange}>
                                 <option value="">None</option>
                                 {props.groups.map((group, i) => (
-                                    <option key={i} value={group.name}>{group.name}</option>
+                                    <option key={i} value={group.id}>{group.name}</option>
                                 ))}
                         </select>
                     </div>

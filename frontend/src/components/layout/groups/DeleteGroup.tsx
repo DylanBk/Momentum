@@ -1,7 +1,7 @@
 type DeleteGroupProps = {
     deleteGroupRef: React.RefObject<HTMLDivElement>,
-    groupId: number,
-    onGroupDelete: () => void
+    id: number,
+    onDelete: () => void
 };
 
 export default function DeleteGroup(props: DeleteGroupProps) {
@@ -17,7 +17,7 @@ export default function DeleteGroup(props: DeleteGroupProps) {
         e.preventDefault();
 
         const formData = {
-            id: props.groupId
+            id: props.id
         };
 
         try {
@@ -29,22 +29,23 @@ export default function DeleteGroup(props: DeleteGroupProps) {
             const res = await req.json();
 
             if (res.message) {
-                const form = props.deleteGroupRef.current?.firstChild as HTMLFormElement;
-                const success = document.createElement('p');
-                
-                success.classList.add('text-pine')
-                success.classList.add('modal-form')
-                success.textContent = 'Group Deleted Successfully!';
-                form?.replaceWith(success);
+                if (props.deleteGroupRef.current) {
+                    const form = props.deleteGroupRef.current.firstChild as HTMLFormElement;
+                    const success = document.createElement('p') as HTMLParagraphElement;
+                    
+                    success.classList.add('text-pine')
+                    success.classList.add('modal-form')
+                    success.textContent = 'Group Deleted Successfully!';
 
-                setTimeout(() => {
-                    if (props.deleteGroupRef.current) {
+                    form.replaceWith(success);
+
+                    setTimeout(() => {
                         success.replaceWith(form)
-                        props.deleteGroupRef.current.style.display = 'none';
-                    };
-                }, 1500);
+                        form.parentElement!.style.display = 'none';
+                    }, 1000);
+                };
 
-                props.onGroupDelete();
+                props.onDelete();
             };
         } catch(err) {
             console.error(err);
@@ -54,7 +55,7 @@ export default function DeleteGroup(props: DeleteGroupProps) {
     return (
         <div
             ref={props.deleteGroupRef}
-            className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
+            className="h-full w-full absolute inset-0 z-20 hidden bg-black/30 backdrop-blur-sm">
             <form
                 className="w-1/3 modal-form"
                 onSubmit={handleSubmitForm}>

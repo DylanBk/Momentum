@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Header from "../layout/common/Header";
 import Signup from "../layout/Signup";
 import Login from "../layout/Login";
+import { useNavigate } from "react-router-dom";
 
 type AuthProps = {
     formType: string
@@ -10,10 +11,18 @@ type AuthProps = {
 
 export default function Auth({formType}: AuthProps) {
     const [isLogin, setIsLogin] = useState<boolean>(false);
+    
+    const nav = useNavigate();
 
     useEffect(() => {
-        const x = formType === 'login' ? true : false;
-        setIsLogin(x);
+        if (document.cookie.split('; ').find(row => row.startsWith('loggedIn='))) {
+            nav('/todos');
+        };
+    })
+
+    useEffect(() => {
+        const type = formType === 'login' ? true : false;
+        setIsLogin(type);
     }, [formType])
 
     return (

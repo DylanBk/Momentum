@@ -38,7 +38,7 @@ export default function LogoutAccount(props: LogoutAccountProps) {
     return (
         <div
             ref={props.LogoutAccountRef}
-            className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
+            className="h-full w-full absolute inset-0 z-20 hidden bg-black/30 backdrop-blur-sm">
             <form
                 className="modal-form"
                 onSubmit={handleFormSubmit}>

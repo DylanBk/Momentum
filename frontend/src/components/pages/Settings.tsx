@@ -91,7 +91,7 @@ export default function Settings() {
 
             <main className="flex flex-col justify-between p-4 border border-divider rounded-lg m-8">
                 <AccountInfo userData={userData} onEdit={handleAccountEdit} />
-                <AccountSecurity />
+                <AccountSecurity onEdit={handleAccountEdit} />
                 <AccountDangerZone onLogout={handleLogout} onDelete={handleDelete} />
 
                 <EditAccount editAccountRef={editAccountRef} formType={formType} userData={userData} onEdit={handleEdit} />

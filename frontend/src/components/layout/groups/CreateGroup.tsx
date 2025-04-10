@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, RefObject, useState } from "react";
 
 type CreateTodoProps = {
     createGroupRef: RefObject<HTMLDivElement>,
-    onCreateGroup: () => void
+    onCreate: () => void
 };
 
 type FormData = {
@@ -31,6 +31,7 @@ export default function CreateGroup(props: CreateTodoProps) {
         });
 
         if (props.createGroupRef.current) {
+            (props.createGroupRef.current.children[0] as HTMLFormElement).reset();
             props.createGroupRef.current.style.display = 'none';
         };
     };
@@ -47,22 +48,24 @@ export default function CreateGroup(props: CreateTodoProps) {
             const res = await req.json();
 
             if (res.message) {
-                const form = props.createGroupRef.current?.firstChild as HTMLDivElement;
-                const success = document.createElement('p');
-                
-                success.classList.add('text-pine')
-                success.classList.add('modal-form')
-                success.textContent = 'Group Created Successfully!';
-                form?.replaceWith(success);
+                if (props.createGroupRef.current) {
+                    const form = props.createGroupRef.current.children[0] as HTMLFormElement;
+                    const success = document.createElement('p') as HTMLParagraphElement;
+                    
+                    success.classList.add('text-pine')
+                    success.classList.add('modal-form')
+                    success.textContent = 'Group Created Successfully!';
 
-                setTimeout(() => {
-                    if (props.createGroupRef.current) {
+                    form.reset();
+                    form.replaceWith(success);
+
+                    setTimeout(() => {
                         success.replaceWith(form)
-                        props.createGroupRef.current.style.display = 'none';
-                    };
-                }, 1500);
+                        form.parentElement!.style.display = 'none';
+                    }, 1000);
+                };
 
-                props.onCreateGroup();
+                props.onCreate();
             };
         } catch(err) {
             console.error(err);
@@ -72,7 +75,7 @@ export default function CreateGroup(props: CreateTodoProps) {
     return (
         <div
             ref={props.createGroupRef}
-            className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
+            className="h-full w-full absolute inset-0 z-20 hidden bg-black/30 backdrop-blur-sm">
             <form
                 className="w-1/3 modal-form"
                 onSubmit={handleFormSubmit}>

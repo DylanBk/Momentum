@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 type FormData = {
@@ -14,6 +14,8 @@ export default function Login() {
         password: null,
     });
     const [error, setError] = useState<string>('');
+
+    const loginRef = useRef<HTMLFormElement>(null);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -36,8 +38,16 @@ export default function Login() {
             const res = await req.json()
 
             if (res.message) {
+                setFormData({
+                    email: null,
+                    password: null
+                });
+                setError('');
+
+                loginRef.current?.reset();
+
                 document.cookie = `loggedIn=true; max-age=1800; path=/`;
-                nav('/todo');
+                nav('/todos');
             } else {
                 setError(res.error);
             };
@@ -50,7 +60,10 @@ export default function Login() {
         <>
             <title>Momentum | Login</title>
 
-            <form className="auth-form" onSubmit={handleSubmitForm}>
+            <form
+                ref={loginRef}
+                className="auth-form"
+                onSubmit={handleSubmitForm}>
                 <label className="absolute invisible" htmlFor="email">Email Address</label>
                 <input
                     name="email"

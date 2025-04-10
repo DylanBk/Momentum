@@ -2,8 +2,8 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 
 type EditGroupProps = {
     editGroupRef: React.RefObject<HTMLDivElement>,
-    groupId: number,
-    onGroupEdit: () => void
+    id: number,
+    onEdit: () => void
 };
 
 type FormData = {
@@ -15,7 +15,7 @@ type FormData = {
 
 export default function EditGroup(props: EditGroupProps) {
     const [formData, setFormData] = useState<FormData>({
-        id: props.groupId,
+        id: props.id,
         updates: {
             name: null
         }
@@ -23,12 +23,12 @@ export default function EditGroup(props: EditGroupProps) {
 
     useEffect(() => {
         setFormData({
-            id: props.groupId,
+            id: props.id,
             updates: {
                 name: null
             }
         });
-    }, [props.groupId]);
+    }, [props.id]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -53,6 +53,7 @@ export default function EditGroup(props: EditGroupProps) {
         });
 
         if (props.editGroupRef.current) {
+            (props.editGroupRef.current.children[0] as HTMLFormElement).reset();
             props.editGroupRef.current.style.display = 'none';
         };
     }
@@ -69,22 +70,22 @@ export default function EditGroup(props: EditGroupProps) {
             const res = await req.json();
 
             if (res.message) {
-                const form = props.editGroupRef.current?.firstChild as HTMLDivElement;
-                const success = document.createElement('p');
+                if (props.editGroupRef.current) {
+                    const form = props.editGroupRef.current.firstChild as HTMLDivElement;
+                    const success = document.createElement('p');
 
-                success.classList.add('text-pine');
-                success.classList.add('modal-form');
-                success.textContent = 'Group Updated Successfully!';
-                form?.replaceWith(success);
+                    success.classList.add('text-pine');
+                    success.classList.add('modal-form');
+                    success.textContent = 'Group Updated Successfully!';
+                    form.replaceWith(success);
 
-                setTimeout(() => {
-                    if (props.editGroupRef.current) {
-                        success.replaceWith(form);
-                        props.editGroupRef.current.style.display = 'none';
-                    };
-                }, 1500);
+                    setTimeout(() => {
+                            success.replaceWith(form);
+                            success.style.display = 'none';
+                    }, 1000);
+                };
 
-                props.onGroupEdit();
+                props.onEdit();
             };
         } catch(err) {
             console.error(err);
@@ -94,7 +95,7 @@ export default function EditGroup(props: EditGroupProps) {
     return (
         <div
             ref={props.editGroupRef}
-            className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
+            className="h-full w-full absolute inset-0 z-20 hidden bg-black/30 backdrop-blur-sm">
                 <form
                     className="w-1/3 modal-form"
                     onSubmit={handleFormSubmit}>

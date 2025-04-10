@@ -116,8 +116,6 @@ def new_todo():
             data = request.get_json()
             group, title, description = data.values()
 
-            print(group, title, description)
-
             if group == '_': #TODO think of a better solution to allow symbols in names
                 group = None
 
@@ -149,10 +147,8 @@ def get_filtered_todos():
         if request.method == 'POST':
             data = request.get_json()
             state, groups = data.values()
-            print('\ndata:', data, '\n')
 
-            todos = db.get_todos_filtered(state=state, groups=groups)
-            print('\n', todos, '\n')
+            todos = db.get_todos_filtered(id=session['id'], state=state, groups=groups)
 
             return jsonify({"message": "successfully retrieved todos", "data": todos}), 200
         return send_from_directory(app.static_folder, 'index.html'), 200
@@ -177,7 +173,6 @@ def update_todo():
         if request.method == 'POST':
             data = request.get_json()
             id, updates = data.values()
-            print(id, updates)
 
             db.update_todo(id, updates)
 

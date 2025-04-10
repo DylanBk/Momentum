@@ -37,6 +37,7 @@ export default function DeleteAccount(props: DeleteAccountProps) {
         });
 
         if (props.deleteAccountRef.current) {
+            (props.deleteAccountRef.current.children[0] as HTMLFormElement).reset();
             props.deleteAccountRef.current.style.display = 'none';
         };
     };
@@ -66,7 +67,7 @@ export default function DeleteAccount(props: DeleteAccountProps) {
     return (
         <div
             ref={props.deleteAccountRef}
-            className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
+            className="h-full w-full absolute inset-0 z-20 hidden bg-black/30 backdrop-blur-sm">
             <form
                 className="modal-form"
                 onSubmit={handleFormSubmit}>

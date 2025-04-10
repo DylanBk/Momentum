@@ -33,10 +33,10 @@ export default function Sidebar(props: SidebarProps) {
         state: null,
         groups: null
     });
+    const [openMenu, setOpenMenu] = useState<string | null>(null);
 
     const handleInputChange = (e: React.MouseEvent<HTMLButtonElement>) => {
         const { name, value } = e.currentTarget;
-        console.log(name, value)
 
         if (name === 'state') {
             if (value === formData.state) { // Remove if clicked again
@@ -79,7 +79,6 @@ export default function Sidebar(props: SidebarProps) {
 
     useEffect(() => {
         const handleFormSubmit = async () => {
-            console.log(formData)
             try {
                 const req = await fetch('/api/filtered-todos/get', {
                     method: 'POST',
@@ -100,11 +99,11 @@ export default function Sidebar(props: SidebarProps) {
     }, [formData])
 
     return (
-        <div className="h-full w-64 flex flex-col gap-4 items-center py-8 border-r border-divider">
+        <div className="h-dvh w-64 flex flex-col gap-4 items-center py-8 border-r border-divider">
             <section className="filters-container">
-                <FilterBtn name="state" value="2" content="Completed" function={handleInputChange} group={null} />
-                <FilterBtn name="state" value="1" content="In Progress" function={handleInputChange} group={null} />
-                <FilterBtn name="state" value="0" content="Not Completed" function={handleInputChange} group={null} />
+                <FilterBtn name="state" value="2" content="Completed" function={handleInputChange} group={null} isOpen={openMenu === 'state-2'} setOpenMenu={setOpenMenu} />
+                <FilterBtn name="state" value="1" content="In Progress" function={handleInputChange} group={null} isOpen={openMenu === 'state-1'} setOpenMenu={setOpenMenu} />
+                <FilterBtn name="state" value="0" content="Not Completed" function={handleInputChange} group={null} isOpen={openMenu === 'state-0'} setOpenMenu={setOpenMenu} />
             </section>
 
             <hr className="w-4/5 h-[1px] border-0 bg-divider" />
@@ -112,8 +111,8 @@ export default function Sidebar(props: SidebarProps) {
             <section className="filters-container">
                 <h2 className="mb-2 text-2xl text-primaryText">Groups</h2>
 
-                <FilterBtn name="group" value="*" content="All" function={handleInputChange} group={null} />
-                <FilterBtn name="group"  value="!" content="Ungrouped" function={handleInputChange} group={null} />
+                <FilterBtn name="group" value="*" content="All" function={handleInputChange} group={null} isOpen={openMenu === 'group-*'} setOpenMenu={setOpenMenu} />
+                <FilterBtn name="group"  value="!" content="Ungrouped" function={handleInputChange} group={null} isOpen={openMenu === 'group-!'} setOpenMenu={setOpenMenu} />
 
                 {props.groups && (
                     <div className="max-h-24 w-56 flex flex-col gap-2 mt-4 overflow-y-scroll">
@@ -124,8 +123,8 @@ export default function Sidebar(props: SidebarProps) {
                                 value={group.id}
                                 content={group.name}
                                 function={handleInputChange}
-                                group={
-                                    {id: group.id,
+                                group={{
+                                    id: group.id,
                                     options: [
                                         {
                                             content: 'Edit',
@@ -136,6 +135,8 @@ export default function Sidebar(props: SidebarProps) {
                                         }
                                     ]
                                 }}
+                                isOpen={openMenu === `group-${group.id}`}
+                                setOpenMenu={setOpenMenu}
                             />
                         ))}
                     </div>

@@ -45,8 +45,11 @@ export default function EditAccount(props: EditAccountProps) {
             username: null,
             password: null
         });
+        setError('');
 
+    
         if (props.editAccountRef.current) {
+            (props.editAccountRef.current.children[0] as HTMLFormElement).reset();
             props.editAccountRef.current.style.display = 'none';
         };
     };
@@ -68,6 +71,8 @@ export default function EditAccount(props: EditAccountProps) {
 
         //TODO check password regex
 
+        setError('');
+
         try {
             const req = await fetch('/api/user/update', {
                 method: 'POST',
@@ -77,20 +82,22 @@ export default function EditAccount(props: EditAccountProps) {
             const res = await req.json();
 
             if (res.message) {
-                const form = props.editAccountRef.current?.firstChild as HTMLFormElement;
-                const success = document.createElement('p');
-                
-                success.classList.add('text-pine')
-                success.classList.add('modal-form')
-                success.textContent = 'Updated Successfully!';
-                form?.replaceWith(success);
+                if (props.editAccountRef.current) {
+                    const form = props.editAccountRef.current.children[0] as HTMLFormElement;
+                    const success = document.createElement('p') as HTMLParagraphElement;
+                    
+                    success.classList.add('text-pine')
+                    success.classList.add('modal-form')
+                    success.textContent = 'Updated Successfully!';
 
-                setTimeout(() => {
-                    if (props.editAccountRef.current) {
+                    form.reset();
+                    form.replaceWith(success);
+
+                    setTimeout(() => {
                         success.replaceWith(form)
-                        props.editAccountRef.current.style.display = 'none';
-                    };
-                }, 1500);
+                        form.parentElement!.style.display = 'none';
+                    }, 1000);
+                };
 
                 props.onEdit();
             } else {
@@ -109,7 +116,7 @@ export default function EditAccount(props: EditAccountProps) {
     return (
         <div
             ref={props.editAccountRef}
-            className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
+            className="h-full w-full absolute inset-0 z-20 hidden bg-black/30 backdrop-blur-sm">
             <form
                 className="w-1/3 modal-form"
                 onSubmit={handleFormSubmit}>

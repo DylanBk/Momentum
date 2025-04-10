@@ -16,7 +16,6 @@ Session = db_config.Session
 def setup():
     with Session() as s:
         check = s.query(User).filter(User.email == 'admin@momentum.com').one_or_none()
-        print(check)
 
         if not check:
             pw = enc_pw('password')
@@ -59,7 +58,6 @@ def create_user(username: str, email: str, pw: str):
     pw = enc_pw(pw)
 
     user = User(username, email, pw)
-    print(user)
     
     with Session() as s:
         s.add(user)
@@ -95,6 +93,7 @@ def update_user(id: int, updates: dict):
         for k, v in updates.items():
             if k == 'newPassword': # new password is named newPassword in form
                 k = 'password'
+                v = enc_pw(v)
             setattr(user, k, v)
 
         s.commit()
@@ -130,9 +129,9 @@ def get_todo(id: int) -> dict | bool:
     return False
 
 def get_todos_filtered(**kwargs: int | list) -> list[dict] | bool:
+    id = kwargs.get('id', None)
     state = kwargs.get('state', None)
     groups = kwargs.get('groups', None)
-    print('s, g', state, groups)
 
     with Session() as s:
         todos = []
@@ -142,19 +141,19 @@ def get_todos_filtered(**kwargs: int | list) -> list[dict] | bool:
             groups = None
 
         if groups and '!' in groups: # if ungrouped
-            todos = s.query(ToDo).filter(and_(ToDo.state == state, ToDo.group == None)).all()
+            todos = s.query(ToDo).filter(and_(ToDo.user == id, ToDo.state == state, ToDo.group == None)).all()
         elif state and not groups: # if state and all/no selected groups
-            todos = s.query(ToDo).filter(ToDo.state == state).all()
+            todos = s.query(ToDo).filter(ToDo.user == id, ToDo.state == state).all()
         elif groups and not state: # if groups and no state
             for group in groups:
-                group_todos = s.query(ToDo).filter(ToDo.group == group).all()
+                group_todos = s.query(ToDo).filter(ToDo.user == id, ToDo.group == group).all()
                 todos.extend(group_todos)  # Use extend to flatten the list
         elif state and groups: # if state and group selected
             for group in groups:
-                group_todos = s.query(ToDo).filter(and_(ToDo.state == state, ToDo.group == group)).all()
+                group_todos = s.query(ToDo).filter(and_(ToDo.user == id, ToDo.state == state, ToDo.group == group)).all()
                 todos.extend(group_todos)  # Use extend to flatten the list
         else: # fallback
-            todos = s.query(ToDo).all()
+            todos = s.query(ToDo).filter(ToDo.user == id).all()
 
     todos = [todo.to_dict() for todo in todos]
 
@@ -163,7 +162,6 @@ def get_todos_filtered(**kwargs: int | list) -> list[dict] | bool:
 def get_todos_all(id: int) -> dict | bool:
     with Session() as s:
         todos = s.query(ToDo).filter(ToDo.user == id).all()
-
     if todos:
         todos_lst = []
 
@@ -175,10 +173,8 @@ def get_todos_all(id: int) -> dict | bool:
     return False
 
 def update_todo(id: int, updates: dict) -> bool:
-    print(id, updates)
     with Session() as s:
         todo = s.query(ToDo).filter(ToDo.id == id).one_or_none()
-        print('t', todo)
 
         if todo:
             for k, v in updates.items():
@@ -205,7 +201,6 @@ def delete_todo(id: int) -> bool:
 # - GROUP CRUD -
 
 def create_group(id: int, name: str):
-    print(id, name)
     with Session() as s:
         group = Group(id, name)
 
@@ -222,8 +217,6 @@ def get_group(**kwargs: int | str) -> dict | bool:
             group = s.query(Group).filter(Group.id == id).one_or_none()
         else:
             group = s.query(Group).filter(and_(Group.user == user, Group.name == name)).one_or_none()
-
-        print(user, name)
 
     if group:
         group_dict = group.to_dict()
@@ -246,10 +239,7 @@ def get_groups_all(id: int) -> dict | bool:
 
 def update_group(user_id: int, id: int, updates: dict) -> None:
     with Session() as s:
-        print(user_id, id, updates)
         group = s.query(Group).filter(and_(Group.user == user_id, Group.id == id)).one_or_none()
-
-        print(group)
 
         for k, v in updates.items():
             setattr(group, k, v)

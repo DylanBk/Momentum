@@ -7,7 +7,7 @@ type Group = {
 type CreateTodoProps = {
     createTodoRef: RefObject<HTMLDivElement>,
     groups: Group[],
-    onCreateTodo: () => void
+    onCreate: () => void
 };
 
 type FormData = {
@@ -42,6 +42,7 @@ export default function CreateTodo(props: CreateTodoProps) {
         });
 
         if (props.createTodoRef.current) {
+            (props.createTodoRef.current.children[0] as HTMLFormElement).reset();
             props.createTodoRef.current.style.display = 'none';
         };
     };
@@ -65,22 +66,24 @@ export default function CreateTodo(props: CreateTodoProps) {
             const req = await res.json();
 
             if (req.message) {
-                const form = document.querySelector('.modal-form') as HTMLFormElement;
-                const success = document.createElement('p');
-                
-                success.classList.add('text-pine')
-                success.classList.add('modal-form')
-                success.textContent = 'ToDo Created Successfully!';
-                form?.replaceWith(success);
+                if (props.createTodoRef.current) {
+                    const form = props.createTodoRef.current.children[0] as HTMLFormElement;
+                    const success = document.createElement('p') as HTMLParagraphElement;
+                    
+                    success.classList.add('text-pine')
+                    success.classList.add('modal-form')
+                    success.textContent = 'ToDo Created Successfully!';
 
-                setTimeout(() => {
-                    if (props.createTodoRef.current) {
+                    form.reset();
+                    form.replaceWith(success);
+
+                    setTimeout(() => {
                         success.replaceWith(form)
-                        props.createTodoRef.current.style.display = 'none';
-                    };
-                }, 1500);
+                        form.parentElement!.style.display = 'none';
+                    }, 1000);
+                };
 
-                props.onCreateTodo();
+                props.onCreate();
             } else {
                 console.error(req.error);
             };
@@ -92,7 +95,7 @@ export default function CreateTodo(props: CreateTodoProps) {
     return (
         <div
             ref={props.createTodoRef}
-            className="h-full w-full absolute inset-0 hidden bg-black/30 backdrop-blur-sm">
+            className="h-full w-full absolute inset-0 z-20 hidden bg-black/30 backdrop-blur-sm">
             <form
                 className="w-1/3 modal-form"
                 onSubmit={handleFormSubmit}>

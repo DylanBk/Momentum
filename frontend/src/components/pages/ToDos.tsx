@@ -31,19 +31,21 @@ type Filter = {
     groups: string[] | number[] | null
 };
 
-export default function ToDo() {
+export default function Todos() {
     const nav = useNavigate();
-
-    const [todos, setTodos] = useState<Todo[]>([]);
-    const [groups, setGroups] = useState<Group[]>([]);
-
-    const [todoId, setTodoId] = useState<(number | null)>(null);
-    const [groupId, setGroupId] = useState<(number | null)>(null);
 
     const [filters, setFilters] = useState<Filter>({
         state: null,
         groups: null
     });
+
+    const [todos, setTodos] = useState<Todo[]>([]);
+    const [groups, setGroups] = useState<Group[]>([]);
+
+    const [openMenu, setOpenMenu] = useState<number | null>(null);
+
+    const [todoId, setTodoId] = useState<(number | null)>(null);
+    const [groupId, setGroupId] = useState<(number | null)>(null);
 
     const createTodoRef = useRef<HTMLDivElement>(null);
     const editTodoRef = useRef<HTMLDivElement>(null);
@@ -210,18 +212,31 @@ export default function ToDo() {
 
                 { todos && (
                     todos.map((todo: Todo, i: number) => (
-                        <Todo key={i} id={todo.id} group={todo.group} title={todo.title} description={todo.description} state={todo.state} onStateChange={handleStateChange} created={todo.created} onEditTodo={handleEditTodo} onDeleteTodo={handleDeleteTodo} />
+                        <Todo
+                            key={i}
+                            id={todo.id}
+                            group={todo.group}
+                            title={todo.title}
+                            description={todo.description}
+                            state={todo.state}
+                            onStateChange={handleStateChange}
+                            created={todo.created}
+                            onEditTodo={handleEditTodo}
+                            onDeleteTodo={handleDeleteTodo}
+                            isOpen={openMenu === todo.id}
+                            setOpenMenu={setOpenMenu}
+                        />
                     ))
                 )}
             </div>
 
-            <CreateTodo createTodoRef={createTodoRef} groups={groups!} onCreateTodo={getTodos} />
-            <EditTodo editTodoRef={editTodoRef} todoId={todoId!} groups={groups!} onTodoEdit={getTodos} />
-            <DeleteTodo deleteTodoRef={deleteTodoref} todoId={todoId!} onTodoDelete={getTodos} />
+            <CreateTodo createTodoRef={createTodoRef} groups={groups!} onCreate={() => getTodos()} />
+            <EditTodo editTodoRef={editTodoRef} id={todoId!} groups={groups!} onEdit={getTodos} />
+            <DeleteTodo deleteTodoRef={deleteTodoref} id={todoId!} onDelete={getTodos} />
 
-            <CreateGroup createGroupRef={createGroupRef} onCreateGroup={getGroups} />
-            <EditGroup editGroupRef={editGroupRef} groupId={groupId!} onGroupEdit={getGroups} />
-            <DeleteGroup deleteGroupRef={deleteGroupRef} groupId={groupId!} onGroupDelete={getGroups} />
+            <CreateGroup createGroupRef={createGroupRef} onCreate={getGroups} />
+            <EditGroup editGroupRef={editGroupRef} id={groupId!} onEdit={getGroups} />
+            <DeleteGroup deleteGroupRef={deleteGroupRef} id={groupId!} onDelete={getGroups} />
         </div>
     );
 };

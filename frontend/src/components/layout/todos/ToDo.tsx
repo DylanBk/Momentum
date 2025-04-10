@@ -9,42 +9,16 @@ type TodoProps = {
     onStateChange: (id: number, state: number) => void,
     created: string,
     onEditTodo: (id: number) => void,
-    onDeleteTodo: (id: number) => void
+    onDeleteTodo: (id: number) => void,
+    isOpen: boolean,
+    setOpenMenu: (menu: number | null) => void
 };
 
 export default function Todo(props: TodoProps) {
-    const [isOptionsActive, setIsOptionsActive] = useState<boolean>(false);
     const [isChecked, setIsChecked] = useState<boolean>(false);
 
     const todoRef = useRef<HTMLDivElement>(null);
     const optionsRef = useRef<HTMLDivElement>(null);
-
-    const todoOptions = [
-        {
-            name: 'Edit',
-            function : () => {
-                if (todoRef.current) {
-                    setIsOptionsActive(false);
-                    props.onEditTodo(Number(todoRef.current.id));
-                };
-            }
-        },
-        {
-            name: 'Delete',
-            function: () => {
-                if (todoRef.current) {
-                    setIsOptionsActive(false);
-                    props.onDeleteTodo(Number(todoRef.current.id));
-                };
-            }
-        }
-    ];
-
-    
-    const handleOptions = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
-        setIsOptionsActive((prev) => !prev);
-    };
 
     useEffect(() => {
         if (props.state === 2) {
@@ -52,15 +26,6 @@ export default function Todo(props: TodoProps) {
         } else {
             setIsChecked(false);
         };
-
-        const handleClickOutside = (e: MouseEvent) => {
-            if (optionsRef.current && !optionsRef.current.contains(e.target as Node)) {
-                setIsOptionsActive(false);
-            };
-        };
-
-        document.addEventListener("click", handleClickOutside);
-        return () => document.removeEventListener("click", handleClickOutside);
     }, [props.state]);
 
     const handleCheck = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +61,48 @@ export default function Todo(props: TodoProps) {
         };
     };
 
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (todoRef.current && !todoRef.current.contains(e.target as Node)) {
+                props.setOpenMenu(null);
+            };
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    })
+
+    const handleOptions = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+
+        props.setOpenMenu(props.isOpen ? null : props.id);
+    };
+
+    useEffect(() => {
+        if (todoRef.current) {
+            todoRef.current.scrollIntoView({behavior: 'smooth'});
+        };
+    }, [props.isOpen]);
+
+    const todoOptions = [
+        {
+            name: 'Edit',
+            function : () => {
+                if (todoRef.current) {
+                    props.onEditTodo(Number(todoRef.current.id));
+                };
+            }
+        },
+        {
+            name: 'Delete',
+            function: () => {
+                if (todoRef.current) {
+                    props.onDeleteTodo(Number(todoRef.current.id));
+                };
+            }
+        }
+    ];
+
     return (
         <div
             id={`${props.id}`}
@@ -113,7 +120,7 @@ export default function Todo(props: TodoProps) {
                 </svg>
             </button>
 
-            {isOptionsActive && (
+            { props.isOpen && (
                 <div
                     ref={optionsRef}
                     className="w-32 absolute top-1/4 right-0 z-10 flex flex-col border border-divider rounded-md bg-bg overflow-hidden">
