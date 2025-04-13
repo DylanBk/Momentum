@@ -99,7 +99,7 @@ export default function Sidebar(props: SidebarProps) {
     }, [formData])
 
     return (
-        <div className="h-dvh w-64 flex flex-col gap-4 items-center py-8 border-r border-divider">
+        <div className="max-h-[calc(100vh-5rem)] w-64 flex flex-col gap-4 items-center py-8 border-r border-divider">
             <section className="filters-container">
                 <FilterBtn name="state" value="2" content="Completed" function={handleInputChange} group={null} isOpen={openMenu === 'state-2'} setOpenMenu={setOpenMenu} />
                 <FilterBtn name="state" value="1" content="In Progress" function={handleInputChange} group={null} isOpen={openMenu === 'state-1'} setOpenMenu={setOpenMenu} />

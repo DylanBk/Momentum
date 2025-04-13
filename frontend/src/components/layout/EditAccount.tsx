@@ -69,7 +69,16 @@ export default function EditAccount(props: EditAccountProps) {
             return;
         };
 
-        //TODO check password regex
+        if ('newPassword' in formData && formData.newPassword) {
+            // min 8 chars, min 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+
+            if (!regex.test(formData.newPassword!)) {
+                setError('Password must be a mix of letters (upper and lowercase), numbers and special characters')
+
+                return;
+            };
+        };
 
         setError('');
 

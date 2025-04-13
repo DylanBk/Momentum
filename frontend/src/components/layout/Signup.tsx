@@ -31,7 +31,14 @@ export default function Signup() {
     const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        //TODO password regex
+        // min 8 chars, min 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+
+        if (!regex.test(formData.password!)) {
+            setError('Password must be a mix of letters (upper and lowercase), numbers and special characters')
+
+            return;
+        };
 
         try {
             const req = await fetch('/api/signup', {
