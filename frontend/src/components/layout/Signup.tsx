@@ -32,7 +32,7 @@ export default function Signup() {
         e.preventDefault();
 
         // min 8 chars, min 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=[\]{};:'",.<>?/\\|`~])[A-Za-z\d!@#$%^&*()_\-+=[\]{};:'",.<>?/\\|`~]{8,}$/;
 
         if (!regex.test(formData.password!)) {
             setError('Password must be a mix of letters (upper and lowercase), numbers and special characters')
