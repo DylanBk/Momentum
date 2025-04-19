@@ -1,12 +1,7 @@
 from modules import *
 
 load_dotenv()
-# PORT = os.environ.get('FLASK_PORT') #dev port
-PORT = os.environ.get('PORT') #prod port
-
-if not PORT:
-    PORT = 5000
-
+PORT = os.environ.get('PORT', 5000) or os.environ.get('FLASK_PORT', 5000)
 SECRET_KEY = os.environ.get('FLASK_SECRET_KEY')
 
 app = Flask(__name__, static_folder='../frontend/public')
