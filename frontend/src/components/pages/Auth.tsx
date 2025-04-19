@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Analytics } from "@vercel/analytics/react"
 
 import Header from "../layout/common/Header";
 import Signup from "../layout/Signup";
@@ -27,6 +28,8 @@ export default function Auth({formType}: AuthProps) {
 
     return (
         <div>
+            <Analytics />
+
             <Header />
 
             <main className="w-1/3 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
