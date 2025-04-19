@@ -30,6 +30,7 @@ export default function Signup() {
 
     const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        console.log(import.meta.env.VITE_API_URL);
 
         // min 8 chars, min 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=[\]{};:'",.<>?/\\|`~])[A-Za-z\d!@#$%^&*()_\-+=[\]{};:'",.<>?/\\|`~]{8,}$/;
