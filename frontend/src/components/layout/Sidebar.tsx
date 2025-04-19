@@ -80,7 +80,7 @@ export default function Sidebar(props: SidebarProps) {
     useEffect(() => {
         const handleFormSubmit = async () => {
             try {
-                const req = await fetch('/api/filtered-todos/get', {
+                const req = await fetch(`${import.meta.env.VITE_API_URL}/api/filtered-todos/get`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(formData)

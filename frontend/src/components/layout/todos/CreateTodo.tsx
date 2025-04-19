@@ -58,7 +58,7 @@ export default function CreateTodo(props: CreateTodoProps) {
         };
 
         try {
-            const res = await fetch('/api/todo/new', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/todo/new`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)

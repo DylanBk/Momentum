@@ -21,7 +21,7 @@ export default function DeleteTodo(props: DeleteTodoProps) {
         };
 
         try {
-            const req = await fetch('/api/todo/delete', {
+            const req = await fetch(`${import.meta.env.VITE_API_URL}/api/todo/delete`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)

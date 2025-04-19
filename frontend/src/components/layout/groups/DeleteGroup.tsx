@@ -21,7 +21,7 @@ export default function DeleteGroup(props: DeleteGroupProps) {
         };
 
         try {
-            const req = await fetch('/api/group/delete', {
+            const req = await fetch(`${import.meta.env.VITE_API_URL}/api/group/delete`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)

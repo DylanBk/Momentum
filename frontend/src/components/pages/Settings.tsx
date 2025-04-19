@@ -37,7 +37,7 @@ export default function Settings() {
 
     const getUserData = async () => {
         try {
-            const req = await fetch('/api/user/get', {
+            const req = await fetch(`${import.meta.env.VITE_API_URL}/api/user/get`, {
                 method: 'GET'
             });
             const res = await req.json();

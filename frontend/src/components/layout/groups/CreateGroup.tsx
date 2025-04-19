@@ -40,7 +40,7 @@ export default function CreateGroup(props: CreateTodoProps) {
         e.preventDefault();
 
         try {
-            const req = await fetch('/api/group/new', {
+            const req = await fetch(`${import.meta.env.VITE_API_URL}/api/group/new`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)

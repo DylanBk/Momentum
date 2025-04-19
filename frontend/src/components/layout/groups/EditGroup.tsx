@@ -62,7 +62,7 @@ export default function EditGroup(props: EditGroupProps) {
         e.preventDefault();
 
         try {
-            const req = await fetch('/api/group/update', {
+            const req = await fetch(`${import.meta.env.VITE_API_URL}/api/group/update`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)

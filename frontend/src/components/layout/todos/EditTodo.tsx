@@ -74,7 +74,7 @@ export default function EditTodo(props: TodoProps) {
         e.preventDefault();
 
         try {
-            const req = await fetch('/api/todo/update', {
+            const req = await fetch(`${import.meta.env.VITE_API_URL}/api/todo/update`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)

@@ -20,7 +20,7 @@ export default function LogoutAccount(props: LogoutAccountProps) {
         e.preventDefault();
 
         try {
-            const req = await fetch('/api/logout', {
+            const req = await fetch(`${import.meta.env.VITE_API_URL}/api/logout`, {
                 method: 'GET'
             });
             const res = await req.json();

@@ -46,7 +46,7 @@ export default function DeleteAccount(props: DeleteAccountProps) {
         e.preventDefault();
 
         try {
-            const req = await fetch('/api/user/delete', {
+            const req = await fetch(`${import.meta.env.VITE_API_URL}/api/user/delete`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)

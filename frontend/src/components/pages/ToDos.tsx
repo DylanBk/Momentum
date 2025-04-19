@@ -56,7 +56,7 @@ export default function Todos() {
     const deleteGroupRef = useRef<HTMLDivElement>(null);
 
     const getTodos = async () => {
-        const req = await fetch('/api/todos/get', {
+        const req = await fetch(`${import.meta.env.VITE_API_URL}/api/todos/get`, {
             method: 'GET'
         });
         const res = await req.json();
@@ -67,7 +67,7 @@ export default function Todos() {
     };
 
     const getGroups = async () => {
-        const req = await fetch('/api/groups/get', {
+        const req = await fetch(`${import.meta.env.VITE_API_URL}/api/groups/get`, {
             method: 'GET'
         });
         const res = await req.json();

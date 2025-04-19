@@ -49,7 +49,7 @@ export default function Todo(props: TodoProps) {
         };
 
         try {
-            await fetch('/api/todo/update', {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/todo/update`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)

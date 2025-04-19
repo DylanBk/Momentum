@@ -83,7 +83,7 @@ export default function EditAccount(props: EditAccountProps) {
         setError('');
 
         try {
-            const req = await fetch('/api/user/update', {
+            const req = await fetch(`${import.meta.env.VITE_API_URL}/api/user/update`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData)
