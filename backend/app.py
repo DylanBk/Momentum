@@ -9,7 +9,7 @@ app.secret_key = SECRET_KEY
 app.permanent_session_lifetime = timedelta(minutes=30)
 CORS(
     app=app,
-    origins=['momentum-4rt5s01c7-dylans-projects-67c9a75c.vercel.app']
+    origins=['https://momentum-git-master-dylans-projects-67c9a75c.vercel.app']
 )
 
 
