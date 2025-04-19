@@ -18,7 +18,7 @@ def setup():
         check = s.query(User).filter(User.email == 'admin@momentum.com').one_or_none()
 
         if not check:
-            pw = enc_pw('password')
+            pw = enc_pw('P@s5w0rd123')
             admin = User(username='Admin', email='admin@momentum.com', password=pw, role='Admin')
 
             s.add(admin)
