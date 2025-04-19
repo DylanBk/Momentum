@@ -15,6 +15,19 @@ CORS(
 
 # ROUTES
 
+@app.before_request
+def before_req():
+    print(
+        f'''
+        \n
+        New Request
+        Method: {request.method}
+        Headers: {request.headers}
+        Body: {request.get_data(as_text=True)}
+        \n
+        '''
+    )
+
 
 # USERS
 
