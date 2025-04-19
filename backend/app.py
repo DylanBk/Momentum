@@ -1,7 +1,12 @@
 from modules import *
 
 load_dotenv()
-PORT = os.environ.get('FLASK_PORT')
+# PORT = os.environ.get('FLASK_PORT') #dev port
+PORT = os.environ.get('PORT') #prod port
+
+if not PORT:
+    PORT = 5000
+
 SECRET_KEY = os.environ.get('FLASK_SECRET_KEY')
 
 app = Flask(__name__, static_folder='../frontend/public')
@@ -261,5 +266,5 @@ def delete_group():
 # MAIN
 
 if __name__ == '__main__':
-    app.run(port=PORT)
+    app.run(host='0.0.0.0', port=PORT)
     db.setup()
