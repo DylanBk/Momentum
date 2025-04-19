@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get('FLASK_SECRET_KEY')
 app = Flask(__name__, static_folder='../frontend/public')
 app.secret_key = SECRET_KEY
 app.permanent_session_lifetime = timedelta(minutes=30)
-CORS(app)
+CORS(app=app, origins=['momentum-4rt5s01c7-dylans-projects-67c9a75c.vercel.app'])
 
 
 # ROUTES
